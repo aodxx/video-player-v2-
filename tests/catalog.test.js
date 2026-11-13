@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseRawData, filterVideos } from '../src/catalog.js';
+import * as catalog from '../src/catalog.js';
+
+const { parseRawData, filterVideos } = catalog;
 
 test('parses pipe-delimited rows and preserves text containing pipes', () => {
   const [video] = parseRawData('SO|2026-11-06 9:06|https://x.com/a/status/12345|https://video.twimg.com/a.mp4|https://pbs.twimg.com/a.jpg|23|42|hello|world');
@@ -8,6 +10,25 @@ test('parses pipe-delimited rows and preserves text containing pipes', () => {
   assert.equal(video.text, 'hello|world');
   assert.equal(video.durationSeconds, 23);
   assert.equal(video.views, 42);
+});
+
+test('parses the Rabbit Rayong source code from imported catalogue rows', () => {
+  const [video] = parseRawData('CX|2026-11-11 13:39|https://x.com/CxllmeB64/status/2120511724931719298|https://video.twimg.com/amplify_video/2120510632365854720/vid/avc1/480x270/hcTEFT1RhwLiYY2H.mp4?tag=29||119|23768|');
+  assert.equal(video?.source, 'Rabbit Rayong');
+  assert.equal(video?.sourceLabel, '@CxllmeB64');
+  assert.equal(video?.views, 23768);
+});
+
+test('duplicate validation keys videos by media URL, not post URL', () => {
+  assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
+  if (typeof catalog.findDuplicateVideoUrls !== 'function') return;
+  const raw = [
+    'SO|2026-11-06|https://x.com/a/status/12345|https://video.twimg.com/a.mp4||23|42|',
+    'SO|2026-11-06|https://x.com/a/status/12345|https://video.twimg.com/b.mp4||24|43|',
+    'SO|2026-11-06|https://x.com/b/status/23456|https://video.twimg.com/a.mp4||25|44|'
+  ].join('\n');
+  const duplicates = catalog.findDuplicateVideoUrls(parseRawData(raw));
+  assert.deepEqual(duplicates, ['https://video.twimg.com/a.mp4']);
 });
 
 test('rejects malformed rows and non-HTTPS media URLs', () => {
