@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.4.0] - 2026-11-14
+
+### Added
+- Added the @lietongheng source filter and imported 6 account-owned clips from the supplied package using its high-resolution video URLs and provided metadata.
+- Added source-specific badge styling and parser support for `LT` records.
+
+### Notes
+- Imported only the package's 6 entries in `lietongheng_own_clips.csv`; excluded 503 reposted clips identified by the package as third-party works for private viewing only.
+
 ## [2.3.0] - 2026-11-14
 
 ### Added
