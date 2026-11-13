@@ -29,7 +29,7 @@
                    font-size:12px;line-height:1.2;white-space:nowrap}
 
   #layout{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 60px)}
-  @media(max-width:900px){#layout{grid-template-columns:1fr;height:auto}#playlist{display:none}#togglePlaylist{display:inline-block}#playlist.mobile-open{display:block;position:fixed;z-index:20;inset:0 0 0 auto;width:min(85vw,320px);box-shadow:-8px 0 24px #0009}}
+  @media(max-width:900px){#layout{grid-template-columns:1fr;height:auto}#togglePlaylist{display:inline-block}}
 
   #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
         gap:10px;padding:14px;overflow-y:auto}
@@ -46,8 +46,12 @@
   .badge.src-cx{background:#3f4533;color:#d5e8a2}
   .card.playing{outline:3px solid #4ea1ff}
 
-  #playlist{background:#161616;border-left:1px solid #2a2a2a;overflow-y:auto;padding:10px}
-  #playlist h3{font-size:13px;margin:6px 4px;color:#aaa}
+  #playlist{background:#161616;border-left:1px solid #2a2a2a;overflow:hidden;padding:10px;display:flex;flex-direction:column;min-height:0}
+  #playlist h3{font-size:13px;margin:6px 4px;color:#aaa;flex:0 0 auto}
+  #playlistSearch{width:100%;min-width:0;margin:4px 0 8px;padding:8px;flex:0 0 auto;background:#222;border:1px solid #333;border-radius:6px;color:#eee}
+  #playlistSearch:focus{outline:2px solid #4ea1ff;outline-offset:1px}
+  #plList{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  @media(max-width:900px){#playlist{display:none}#playlist.mobile-open{display:flex;position:fixed;z-index:20;inset:0 0 0 auto;width:min(85vw,320px);box-shadow:-8px 0 24px #0009}}
   .pl-item{display:flex;gap:8px;padding:6px;border-radius:6px;cursor:pointer;font-size:11px;align-items:center;color:#bbb}
   .pl-item:hover{background:#222}
   .pl-item.active{background:#1e3a5f;color:#fff}
@@ -113,6 +117,7 @@
   <div id="grid"><div class="loading">กำลังโหลดข้อมูล...</div></div>
   <aside id="playlist">
     <h3>Playlist</h3>
+    <input id="playlistSearch" type="search" placeholder="ค้นหาใน Playlist..." aria-label="ค้นหาใน Playlist">
     <div id="plList"></div>
   </aside>
 </div>

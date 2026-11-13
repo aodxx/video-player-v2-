@@ -1,4 +1,4 @@
-import { filterVideos, parseRawData } from './catalog.js';
+import { filterPlaylistItems, filterVideos, parseRawData } from './catalog.js';
 
 /* ถ้าเปิดจาก GitHub Pages แล้ววิดีโอยัง 403 ให้ตั้งค่า เช่น
    const PROXY_PREFIX = 'https://your-worker.workers.dev/?url=';  */
@@ -11,7 +11,7 @@ const $ = id => document.getElementById(id);
 const grid=$('grid'), plList=$('plList'), countEl=$('count');
 const searchEl=$('search'), sortEl=$('sort'), sourceEl=$('source');
 const favoritesButton=$('showFavorites');
-const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist');
+const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
 const bufferStatus=$('bufferStatus');
@@ -178,11 +178,12 @@ function render(){
 }
 
 function renderPlaylist(){
-  plList.innerHTML = currentList.slice(0,200).map((d,i)=>`
+  const items = filterPlaylistItems(currentList, playlistSearchEl.value);
+  plList.innerHTML = items.length ? items.map(({video:d,index:i})=>`
     <div class="pl-item ${i===currentIdx?'active':''}" data-i="${i}">
       <span class="num">${i+1}.</span>
       <span>${fmtDur(d.durationSeconds)} · 👁${fmtViews(d.views)} · ${d.sourceLabel}</span>
-    </div>`).join('');
+    </div>`).join('') : '<div class="loading">ไม่พบรายการใน Playlist</div>';
   plList.querySelectorAll('.pl-item').forEach(el=>{ el.onclick=()=>{
     openAt(+el.dataset.i,true);
     playlist.classList.remove('mobile-open');
@@ -337,6 +338,7 @@ btnNext.onclick = nextVideo;
 searchEl.oninput = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 sortEl.onchange  = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 sourceEl.onchange= ()=>{currentIdx=-1;visibleCardLimit=300;render();};
+playlistSearchEl.oninput = renderPlaylist;
 qualityEl.onchange = applyQualityMode;
 favoritesButton.onclick=()=>{favoriteOnly=!favoriteOnly; currentIdx=-1; render();};
 $('btnClose').onclick = closeModal;
