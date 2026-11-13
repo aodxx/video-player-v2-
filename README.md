@@ -32,7 +32,7 @@ python3 -m http.server 8080
 SOURCE|POSTED_AT|POST_URL|VIDEO_URL|THUMBNAIL_URL|DURATION_SECONDS|VIEWS|TEXT
 ```
 
-`SOURCE` ต้องเป็น `SO` หรือ `RW`; URL วิดีโอต้องเป็น HTTPS บน `video.twimg.com`; ภาพปกว่างได้ หรือเป็น HTTPS บน `pbs.twimg.com`. ข้อความโพสต์มีเครื่องหมาย `|` ได้ เพราะ parser รวมส่วนที่เหลือกลับเป็นข้อความเดิม ตรวจ catalogue ก่อนเผยแพร่ด้วย `npm run validate:data`; validator รายงานข้อผิดพลาดโดยไม่แก้หรือลบแถวเอง
+`SOURCE` ต้องเป็น `SO`, `RW` หรือ `CX` (`@CxllmeB64`, Rabbit Rayong); URL วิดีโอต้องเป็น HTTPS บน `video.twimg.com`; ภาพปกว่างได้ หรือเป็น HTTPS บน `pbs.twimg.com`. โพสต์เดียวกันอาจมีหลายคลิป จึงตรวจรายการซ้ำจาก `VIDEO_URL` ไม่ใช่ `POST_URL`. ข้อความโพสต์มีเครื่องหมาย `|` ได้ เพราะ parser รวมส่วนที่เหลือกลับเป็นข้อความเดิม ตรวจ catalogue ก่อนเผยแพร่ด้วย `npm run validate:data`; validator รายงานข้อผิดพลาดโดยไม่แก้หรือลบแถวเอง
 
 ## Worker และข้อควรระวัง
 

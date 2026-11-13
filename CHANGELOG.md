@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.0] - 2026-11-14
+
+### Added
+- Added 158 unique videos from @CxllmeB64 (Rabbit Rayong), including the PDF's timestamps, durations, view counts, post links, and low-resolution MP4 URLs.
+- Added @CxllmeB64 as a source filter and gave its cards a distinct badge style.
+
+### Changed
+- Catalogue duplicate validation now checks media URLs, so multiple distinct clips linked from one post are allowed.
+
 ## [2.1.0] - 2026-11-13
 
 ### Added
