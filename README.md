@@ -2,6 +2,12 @@
 
 เว็บ static สำหรับค้นหาและเล่นวิดีโอจาก catalogue ใน `data/videos.txt` ผ่านหน้าเว็บ `index.html` และ Cloudflare Worker สำหรับ proxy วิดีโอ/ค้นหาคุณภาพสูง
 
+## การมีส่วนร่วม
+
+- ทุกคน: อ่าน [CONTRIBUTING.md](CONTRIBUTING.md) ก่อนเริ่มงาน
+- AI agents: อ่าน [AGENTS.md](AGENTS.md) ซึ่งสรุปข้อกำหนดเฉพาะของ repository
+- Pull request: ใช้ [เทมเพลต PR](.github/pull_request_template.md)
+
 ## Playlist
 
 Playlist แสดงทุกรายการในผลลัพธ์ปัจจุบันโดยไม่จำกัด 200 รายการ เลื่อนรายการได้ในแถบ Playlist และค้นหาแยกด้วยบัญชี วันที่ ข้อความ ลิงก์โพสต์ ยอดวิว ความยาว หรือหมายเลขรายการได้ การค้นหาใน Playlist จะกรองเฉพาะรายการที่มองเห็น โดยยังเปิดวิดีโอจากตำแหน่งเดิมในลำดับเล่น
