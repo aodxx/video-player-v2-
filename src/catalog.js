@@ -1,4 +1,8 @@
-const SOURCES = Object.freeze({ SO: ['SoMay', 'So_May'], RW: ['Rewaida', 'Rewaida'] });
+const SOURCES = Object.freeze({
+  SO: ['SoMay', 'So_May'],
+  RW: ['Rewaida', 'Rewaida'],
+  CX: ['Rabbit Rayong', '@CxllmeB64']
+});
 
 function isHttpsHost(value, host) {
   try {
@@ -46,6 +50,16 @@ function validPostedAt(value) {
     && date.getUTCDate() === Number(day)
     && Number(hour) < 24
     && Number(minute) < 60;
+}
+
+export function findDuplicateVideoUrls(videos) {
+  const seen = new Set();
+  const duplicates = new Set();
+  for (const video of videos) {
+    if (seen.has(video.videoUrl)) duplicates.add(video.videoUrl);
+    seen.add(video.videoUrl);
+  }
+  return [...duplicates];
 }
 
 export function filterVideos(videos, { source = 'all', query = '', favorites = null } = {}) {
