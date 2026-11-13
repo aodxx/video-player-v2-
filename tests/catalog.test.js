@@ -26,6 +26,14 @@ test('parses the Subhash source code and label from imported catalogue rows', ()
   assert.equal(video?.durationSeconds, 596);
 });
 
+test('parses the Lietongheng source code and label for account-owned clips', () => {
+  const [video] = parseRawData('LT|2026-02-12 17:05|https://x.com/lietongheng/status/2021994157494124669|https://video.twimg.com/amplify_video/2021994068562391042/vid/avc1/720x1028/t1gbZoS0EpyUcW6g.mp4?tag=14||228|64190|sample clip');
+  assert.equal(video?.source, 'Lietongheng');
+  assert.equal(video?.sourceLabel, '@lietongheng');
+  assert.equal(video?.durationSeconds, 228);
+  assert.equal(video?.views, 64190);
+});
+
 test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
   if (typeof catalog.findDuplicateVideoUrls !== 'function') return;
