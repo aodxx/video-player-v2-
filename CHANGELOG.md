@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1] - 2026-11-14
+
+### Fixed
+- Playlist now includes every item in the current result instead of stopping after the first 200.
+- Added a dedicated Playlist search that matches source, date, text, post link, views, duration, or item number while retaining the original playback index.
+- Kept the search control visible while the full playlist scrolls, including in the mobile drawer.
+
 ## [2.2.0] - 2026-11-14
 
 ### Added

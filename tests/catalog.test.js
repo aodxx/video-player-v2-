@@ -46,6 +46,35 @@ test('rejects prototype-key source codes and invalid calendar dates', () => {
   assert.deepEqual(parseRawData(rows.join('\n')), []);
 });
 
+test('playlist includes all items beyond 200 and preserves original indices', () => {
+  assert.equal(typeof catalog.filterPlaylistItems, 'function');
+  if (typeof catalog.filterPlaylistItems !== 'function') return;
+  const videos = Array.from({ length: 350 }, (_, index) => ({
+    sourceLabel: `@source${index}`,
+    postedAt: '2026-11-14 09:00',
+    text: `clip ${index}`,
+    postUrl: `https://x.com/a/status/${10000 + index}`,
+    views: index,
+    durationSeconds: 60
+  }));
+  const items = catalog.filterPlaylistItems(videos);
+  assert.equal(items.length, 350);
+  assert.equal(items[0].index, 0);
+  assert.equal(items[349].index, 349);
+  assert.strictEqual(items[349].video, videos[349]);
+});
+
+test('playlist search matches case-insensitive metadata and retains the original index', () => {
+  assert.equal(typeof catalog.filterPlaylistItems, 'function');
+  if (typeof catalog.filterPlaylistItems !== 'function') return;
+  const videos = [
+    { sourceLabel: '@So_MayBDSM', postedAt: '2026-11-14 09:00', text: 'sunset', postUrl: 'https://x.com/a/status/123', views: 10, durationSeconds: 60 },
+    { sourceLabel: '@CxllmeB64', postedAt: '2026-11-11 13:39', text: '', postUrl: 'https://x.com/CxllmeB64/status/2120511724931719298', views: 23768, durationSeconds: 119 }
+  ];
+  const result = catalog.filterPlaylistItems(videos, '  CXLLMEB64  ');
+  assert.deepEqual(result, [{ video: videos[1], index: 1 }]);
+});
+
 test('filters by source, date/text query and favorite state without mutating input', () => {
   const videos = parseRawData([
     'SO|2026-11-06 9:06|https://x.com/a/status/12345|https://video.twimg.com/a.mp4||23|42|Blue sky',

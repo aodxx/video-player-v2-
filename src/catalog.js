@@ -62,6 +62,28 @@ export function findDuplicateVideoUrls(videos) {
   return [...duplicates];
 }
 
+export function filterPlaylistItems(videos, query = '') {
+  const needle = String(query).trim().toLocaleLowerCase();
+  const items = videos.map((video, index) => ({ video, index }));
+  if (!needle) return items;
+
+  return items.filter(({ video, index }) => {
+    const duration = Math.max(0, Number(video.durationSeconds) || 0);
+    const durationLabel = `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')}`;
+    const searchable = [
+      index + 1,
+      video.sourceLabel,
+      video.postedAt,
+      video.text,
+      video.postUrl,
+      video.views,
+      duration,
+      durationLabel
+    ].join(' ').toLocaleLowerCase();
+    return searchable.includes(needle);
+  });
+}
+
 export function filterVideos(videos, { source = 'all', query = '', favorites = null } = {}) {
   const needle = String(query).trim().toLocaleLowerCase();
   return videos.filter((video) => {
