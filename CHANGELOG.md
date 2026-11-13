@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.5.0] - 2026-11-14
+
+### Added
+- Added the @NNNKII88 source filter and 11 account-owned clips from the supplied CSV, with post links and supplied date, duration, and view metadata.
+- Added source-specific badge styling and parser support for `NK` records.
+
+### Notes
+- Post caption text was omitted because it contains gambling promotions and affiliate links; source post links are retained.
+
+
 ## [2.4.0] - 2026-11-14
 
 ### Added
