@@ -72,6 +72,8 @@
   .bottombar a{color:#4ea1ff}
   .autonext{display:flex;align-items:center;gap:6px}
   .autonext input{width:auto}
+  .quality-control{display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .quality-control select{max-width:132px;padding:6px}
   #errorBox{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
             width:min(92%,520px);background:#4a2020;color:#ffaaaa;padding:14px;border-radius:8px;
             font-size:13px;line-height:1.6;z-index:5}
@@ -127,7 +129,11 @@
       <div class="bottombar">
         <label class="autonext"><input type="checkbox" id="autonext" checked> เล่นต่ออัตโนมัติ</label>
         <label class="autonext"><input type="checkbox" id="autofs" checked> เปิดเต็มจอทันที</label>
-        <label class="autonext"><input type="checkbox" id="hqOn" checked> ภาพคมสุด</label>
+        <label class="quality-control">คุณภาพ <select id="qualityMode" aria-label="คุณภาพวิดีโอ">
+          <option value="auto">อัตโนมัติ</option>
+          <option value="original">ต้นฉบับ</option>
+          <option value="max">สูงสุด</option>
+        </select></label>
         <span id="details"></span>
       </div>
     </div>
@@ -1822,7 +1828,12 @@ const favoritesButton=$('showFavorites');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
 const bufferStatus=$('bufferStatus');
-const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), hqOn=$('hqOn'), errorBox=$('errorBox');
+const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), qualityEl=$('qualityMode'), errorBox=$('errorBox');
+const QUALITY_KEY = 'video-player-v2:quality';
+function normalizeQuality(value){return ['auto','original','max'].includes(value)?value:'auto';}
+function readQualityPreference(){try{return normalizeQuality(localStorage.getItem(QUALITY_KEY));}catch(e){return 'auto';}}
+function saveQualityPreference(){try{localStorage.setItem(QUALITY_KEY,normalizeQuality(qualityEl.value));}catch(e){console.warn('บันทึกคุณภาพไม่ได้',e);}}
+qualityEl.value = readQualityPreference();
 
 /* ---------- Favorites: เก็บเฉพาะ URL โพสต์ ไม่แก้ไขชุดข้อมูลต้นฉบับ ---------- */
 const FAVORITES_KEY = 'video-player-v2:favorites';
@@ -1928,6 +1939,7 @@ function scheduleBufferRecovery(){
   },12000);
 }
 function pixels(u){const m=/\/(\d+)x(\d+)\//.exec(u||'');return m?+m[1]*+m[2]:0;}
+function resolutionLabel(u){const m=/\/(\d+)x(\d+)\//.exec(u||'');return m?m[2]+'p':'';}
 
 /* ---------- รายการ / แสดงผล ---------- */
 function buildList(){
@@ -2036,19 +2048,22 @@ function openAt(i,fromUser){
   const token = ++openToken;
   clearBufferStatus();
   d._usingHQ = false; d._res = ''; d._stallRetries = 0; d._networkRetries = 0;
-  const startPlay = url=>{
+  const startPlay = (url, useHQ=false, height=0)=>{
     if(token!==openToken) return;
+    d._usingHQ = useHQ; d._hqUrl = useHQ ? url : '';
+    d._res = useHQ ? (height ? height+'p' : resolutionLabel(url)) : resolutionLabel(url);
+    updateDetails(d);
     player.src = buildVideoUrl(url);
     player.load();
     player.play().catch(err=>console.log('autoplay blocked:',err.message));
-    const nx=currentList[i+1]; if(nx && hqOn.checked) resolveHQ(nx);   // โหลดล่วงหน้าคลิปถัดไป
+    const nx=currentList[i+1]; if(nx && qualityEl.value!=='original') resolveHQ(nx);   // โหลดล่วงหน้าคลิปถัดไป
   };
-  if(hqOn.checked && HQ_BASE && !d._hqFailed){
+  const mode = qualityEl.value;
+  if(mode!=='original' && HQ_BASE){
     withTimeout(resolveHQ(d),2500).then(h=>{
-      if(h && pixels(h.url) > pixels(d.video_url_mp4)){
-        d._usingHQ = true; d._hqUrl = h.url; d._res = h.height+'p'; updateDetails(d);
-        startPlay(h.url);
-      } else startPlay(d.video_url_mp4);
+      if(token!==openToken) return;
+      if(h && (mode==='max' || pixels(h.url) > pixels(d.video_url_mp4))) startPlay(h.url,true,h.height);
+      else startPlay(d.video_url_mp4);
     });
   } else startPlay(d.video_url_mp4);
 
@@ -2061,9 +2076,34 @@ function openAt(i,fromUser){
   showUI();
 }
 function updateDetails(d){
-  detailsEl.innerHTML = `${d._sourceLabel}${d.text?' · '+esc(d.text):''} · 👁 ${d.views} · ⏱ ${fmtDur(d.duration_sec)}`
-    + (d._res?` · 🔆 ${d._res}`:'')
+  const playingQuality = d._usingHQ ? `สูงสุด${d._res?' · '+d._res:''}` : `ต้นฉบับ${d._res?' · '+d._res:''}`;
+  detailsEl.innerHTML = `${d._sourceLabel}${d.text?' · '+esc(d.text):''} · 👁 ${d.views} · ⏱ ${fmtDur(d.duration_sec)} · กำลังเล่น: ${playingQuality}`
     + ` · <a href="${d.post_url}" target="_blank" rel="noopener">ทวีต ↗</a> · <button id="favoriteCurrent" class="favorite-action ${isFavorite(d)?'is-favorite':''}" type="button" aria-pressed="${isFavorite(d)}" onclick="toggleCurrentFavorite()">${isFavorite(d)?'★ บันทึกแล้ว':'☆ เพิ่มรายการโปรด'}</button>`;
+}
+function applyQualityMode(){
+  saveQualityPreference();
+  if(currentIdx<0) return;
+  const d=currentList[currentIdx]; if(!d) return;
+  const token=++openToken;
+  const playbackPosition=()=>Number.isFinite(player.currentTime)?player.currentTime:0;
+  const shouldResume=()=>!player.paused;
+  const mode=qualityEl.value;
+  clearBufferStatus(); errorBox.classList.remove('active');
+  d._usingHQ=false; d._hqUrl=''; d._res=''; d._hqFailed=false; d._stallRetries=0; d._networkRetries=0;
+  const useOriginal=()=>{
+    if(token!==openToken) return;
+    d._usingHQ=false; d._hqUrl=''; d._res=resolutionLabel(d.video_url_mp4);
+    updateDetails(d); reloadPlayerAt(d.video_url_mp4,playbackPosition(),token,shouldResume());
+  };
+  if(mode==='original' || !HQ_BASE){useOriginal();return;}
+  showBufferStatus('กำลังเปลี่ยนคุณภาพวิดีโอ…');
+  withTimeout(resolveHQ(d),2500).then(h=>{
+    if(token!==openToken) return;
+    if(h && (mode==='max' || pixels(h.url)>pixels(d.video_url_mp4))){
+      d._usingHQ=true; d._hqUrl=h.url; d._res=h.height?h.height+'p':resolutionLabel(h.url);
+      updateDetails(d); reloadPlayerAt(h.url,playbackPosition(),token,shouldResume());
+    } else useOriginal();
+  });
 }
 function retryCurrent(){ if(currentIdx>=0) openAt(currentIdx); }
 function nextVideo(){ if(currentIdx<currentList.length-1) openAt(currentIdx+1); }
@@ -2109,6 +2149,7 @@ btnNext.onclick = nextVideo;
 searchEl.oninput = ()=>{currentIdx=-1;render();};
 sortEl.onchange  = ()=>{currentIdx=-1;render();};
 sourceEl.onchange= ()=>{currentIdx=-1;render();};
+qualityEl.onchange = applyQualityMode;
 favoritesButton.onclick=()=>{favoriteOnly=!favoriteOnly; currentIdx=-1; render();};
 
 /* มือถือ: ปัดขึ้น = ถัดไป, ปัดลง = ก่อนหน้า (ไม่นับแถบควบคุมวิดีโอด้านล่าง) */
