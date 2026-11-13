@@ -76,6 +76,10 @@
             width:min(92%,520px);background:#4a2020;color:#ffaaaa;padding:14px;border-radius:8px;
             font-size:13px;line-height:1.6;z-index:5}
   #errorBox.active{display:block}
+  #bufferStatus{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+                z-index:4;max-width:85%;padding:10px 14px;border:1px solid #ffffff26;border-radius:8px;
+                background:#000b;color:#eee;text-align:center;font-size:13px;pointer-events:none}
+  #bufferStatus.active{display:block}
   #errorBox button{margin-top:10px;background:#6a2a2a;border-color:#8a3a3a}
 </style>
 </head>
@@ -111,6 +115,7 @@
     <video id="player" controls controlslist="nofullscreen" playsinline
            preload="metadata" referrerpolicy="no-referrer"></video>
 
+    <div id="bufferStatus" role="status" aria-live="polite"></div>
     <div id="ui">
       <div class="topbar">
         <button onclick="closeModal()">✕ ปิด</button>
@@ -1816,6 +1821,7 @@ const searchEl=$('search'), sortEl=$('sort'), sourceEl=$('source');
 const favoritesButton=$('showFavorites');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
+const bufferStatus=$('bufferStatus');
 const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), hqOn=$('hqOn'), errorBox=$('errorBox');
 
 /* ---------- Favorites: เก็บเฉพาะ URL โพสต์ ไม่แก้ไขชุดข้อมูลต้นฉบับ ---------- */
@@ -1874,6 +1880,53 @@ function resolveHQ(d){
   return p;
 }
 const withTimeout=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))]);
+let bufferWatchdog=0;
+function showBufferStatus(message='กำลังโหลดวิดีโอ…'){
+  bufferStatus.textContent=message;
+  bufferStatus.classList.add('active');
+}
+function clearBufferStatus(){
+  clearTimeout(bufferWatchdog);
+  bufferStatus.classList.remove('active');
+}
+function reloadPlayerAt(url,position,token,shouldPlayAfterRecovery=true){
+  const shouldPlay=shouldPlayAfterRecovery && !player.ended;
+  const restore=()=>{
+    if(token!==openToken) return;
+    if(position>0 && Number.isFinite(player.duration)) player.currentTime=Math.min(position,Math.max(0,player.duration-0.25));
+    if(shouldPlay) player.play().catch(()=>{});
+  };
+  player.addEventListener('loadedmetadata',restore,{once:true});
+  player.src=buildVideoUrl(url);
+  player.load();
+  if(shouldPlay) player.play().catch(()=>{});
+}
+function fallbackFromHQ(d,token,message='กำลังสลับไปใช้ไฟล์ต้นฉบับ…'){
+  if(!d || !d._usingHQ || token!==openToken) return false;
+  const position=Number.isFinite(player.currentTime)?player.currentTime:0;
+  d._usingHQ=false; d._hqFailed=true; d._res='';
+  updateDetails(d);
+  showBufferStatus(message);
+  reloadPlayerAt(d.video_url_mp4,position,token,true);
+  return true;
+}
+function scheduleBufferRecovery(){
+  clearTimeout(bufferWatchdog);
+  const token=openToken;
+  bufferWatchdog=setTimeout(()=>{
+    const d=currentList[currentIdx];
+    if(!d || token!==openToken || player.paused || player.readyState>=3) return;
+    if(fallbackFromHQ(d,token,'ไฟล์ความละเอียดสูงโหลดช้า กำลังสลับเป็นไฟล์ที่เสถียรกว่า…')) return;
+    if((d._stallRetries||0)<1){
+      d._stallRetries=(d._stallRetries||0)+1;
+      showBufferStatus('การเชื่อมต่อสะดุด กำลังลองโหลดต่อ…');
+      reloadPlayerAt(d.video_url_mp4,Number.isFinite(player.currentTime)?player.currentTime:0,token,true);
+      return;
+    }
+    $('errInfo').textContent='โหลดวิดีโอไม่ต่อเนื่อง ลองกด “ลองอีกครั้ง” หรือตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
+    errorBox.classList.add('active');
+  },12000);
+}
 function pixels(u){const m=/\/(\d+)x(\d+)\//.exec(u||'');return m?+m[1]*+m[2]:0;}
 
 /* ---------- รายการ / แสดงผล ---------- */
@@ -1981,7 +2034,8 @@ function openAt(i,fromUser){
   const d = currentList[i];
   errorBox.classList.remove('active');
   const token = ++openToken;
-  d._usingHQ = false; d._res = '';
+  clearBufferStatus();
+  d._usingHQ = false; d._res = ''; d._stallRetries = 0; d._networkRetries = 0;
   const startPlay = url=>{
     if(token!==openToken) return;
     player.src = buildVideoUrl(url);
@@ -1990,9 +2044,9 @@ function openAt(i,fromUser){
     const nx=currentList[i+1]; if(nx && hqOn.checked) resolveHQ(nx);   // โหลดล่วงหน้าคลิปถัดไป
   };
   if(hqOn.checked && HQ_BASE && !d._hqFailed){
-    withTimeout(resolveHQ(d),4000).then(h=>{
+    withTimeout(resolveHQ(d),2500).then(h=>{
       if(h && pixels(h.url) > pixels(d.video_url_mp4)){
-        d._usingHQ = true; d._res = h.height+'p'; updateDetails(d);
+        d._usingHQ = true; d._hqUrl = h.url; d._res = h.height+'p'; updateDetails(d);
         startPlay(h.url);
       } else startPlay(d.video_url_mp4);
     });
@@ -2024,14 +2078,22 @@ function closeModal(){
   render();
 }
 
+player.addEventListener('loadstart',()=>{ showBufferStatus(); scheduleBufferRecovery(); });
+player.addEventListener('waiting',()=>{ showBufferStatus('กำลังรอข้อมูลวิดีโอ…'); scheduleBufferRecovery(); });
+player.addEventListener('stalled',()=>{ showBufferStatus('การเชื่อมต่อช้ากว่าปกติ…'); scheduleBufferRecovery(); });
+['playing','canplay','loadeddata'].forEach(ev=>player.addEventListener(ev,clearBufferStatus));
 player.addEventListener('error',()=>{
+  clearBufferStatus();
   const cur = currentList[currentIdx];
-  if(cur && cur._usingHQ){           // ลิงก์คมสุดเล่นไม่ได้ -> กลับไปใช้ลิงก์เดิม
-    cur._usingHQ=false; cur._hqFailed=true; cur._res='';  updateDetails(cur);
-    player.src = buildVideoUrl(cur.video_url_mp4); player.load(); player.play().catch(()=>{});
+  const token = openToken;
+  if(cur && fallbackFromHQ(cur,token,'ไฟล์ความละเอียดสูงเล่นไม่ได้ กำลังสลับเป็นไฟล์ต้นฉบับ…')) return;
+  const c = player.error ? player.error.code : '?';
+  if(cur && c===2 && (cur._networkRetries||0)<1){
+    cur._networkRetries=(cur._networkRetries||0)+1;
+    showBufferStatus('เครือข่ายสะดุด กำลังลองเชื่อมต่ออีกครั้ง…');
+    reloadPlayerAt(cur.video_url_mp4,Number.isFinite(player.currentTime)?player.currentTime:0,token,true);
     return;
   }
-  const c = player.error ? player.error.code : '?';
   const names = {1:'ถูกยกเลิก',2:'เครือข่าย/ถูกบล็อก (มักเป็น 403)',3:'ถอดรหัสไฟล์ไม่ได้',4:'ไม่พบไฟล์หรือเบราว์เซอร์ไม่รองรับ'};
   $('errInfo').textContent = `รหัสข้อผิดพลาด ${c}: ${names[c]||'ไม่ทราบสาเหตุ'}`
     + (PROXY_PREFIX ? ' (ผ่าน proxy แล้ว)' : ' — ถ้ากด "เปิด MP4 ตรงๆ" แล้วเล่นได้ แปลว่าเว็บนี้ถูกบล็อก ต้องใช้ proxy');
