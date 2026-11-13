@@ -17,6 +17,14 @@
   button:hover{background:#2e2e2e}
   button:disabled{opacity:.3;cursor:not-allowed}
   #count{font-size:12px;color:#888;white-space:nowrap}
+  #showFavorites.active{border-color:#ffbd4a;color:#ffcf70;background:#382b16}
+  .card .thumb{position:relative}
+  .favorite-btn{position:absolute;top:8px;right:8px;z-index:1;width:34px;height:34px;padding:0;
+                border-radius:50%;background:#000b;border:1px solid #fff5;color:#fff;font-size:19px;line-height:1}
+  .favorite-btn.is-favorite{color:#ffca55;border-color:#ffca55}
+  .favorite-btn:hover{background:#30250f}
+  .favorite-action{position:static;width:auto;height:auto;padding:6px 9px;border-radius:6px;
+                   font-size:12px;line-height:1.2;white-space:nowrap}
 
   #layout{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 60px)}
   @media(max-width:900px){#layout{grid-template-columns:1fr;height:auto}#playlist{display:none}}
@@ -86,6 +94,7 @@
     <option value="views">เรียงตามยอดวิว</option>
     <option value="duration">เรียงตามความยาว</option>
   </select>
+  <button id="showFavorites" type="button" aria-pressed="false">☆ รายการโปรด 0</button>
   <span id="count"></span>
 </header>
 
@@ -1804,10 +1813,47 @@ let DATA = [], currentList = [], currentIdx = -1, openToken = 0;
 const $ = id => document.getElementById(id);
 const grid=$('grid'), plList=$('plList'), countEl=$('count');
 const searchEl=$('search'), sortEl=$('sort'), sourceEl=$('source');
+const favoritesButton=$('showFavorites');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
 const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), hqOn=$('hqOn'), errorBox=$('errorBox');
 
+/* ---------- Favorites: เก็บเฉพาะ URL โพสต์ ไม่แก้ไขชุดข้อมูลต้นฉบับ ---------- */
+const FAVORITES_KEY = 'video-player-v2:favorites';
+let favoriteOnly = false;
+let favorites = new Set();
+try {
+  const stored = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+  if (Array.isArray(stored)) favorites = new Set(stored.filter(x => typeof x === 'string'));
+} catch (e) { console.warn('อ่านรายการโปรดไม่ได้', e); }
+function isFavorite(d){ return favorites.has(d.post_url); }
+function syncFavoriteControls(){
+  favoritesButton.classList.toggle('active', favoriteOnly);
+  favoritesButton.setAttribute('aria-pressed', String(favoriteOnly));
+  favoritesButton.textContent = `${favoriteOnly?'★':'☆'} รายการโปรด ${favorites.size}`;
+  const current = currentList[currentIdx];
+  const modalButton = $('favoriteCurrent');
+  if(modalButton){
+    modalButton.textContent = current && isFavorite(current) ? '★ บันทึกแล้ว' : '☆ เพิ่มรายการโปรด';
+    modalButton.classList.toggle('is-favorite', !!current && isFavorite(current));
+    modalButton.setAttribute('aria-pressed', String(!!current && isFavorite(current)));
+  }
+}
+function toggleFavorite(d){
+  if(!d) return;
+  if(isFavorite(d)) favorites.delete(d.post_url); else favorites.add(d.post_url);
+  try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); }
+  catch(e){ console.warn('บันทึกรายการโปรดไม่ได้', e); }
+  syncFavoriteControls();
+  if(favoriteOnly) render();
+  else document.querySelectorAll('.card').forEach(card=>{
+    if(+card.dataset.i < currentList.length && currentList[+card.dataset.i].post_url === d.post_url){
+      const button=card.querySelector('.favorite-btn');
+      if(button){ const saved=isFavorite(d); button.classList.toggle('is-favorite',saved); button.textContent=saved?'★':'☆'; button.setAttribute('aria-label',saved?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'); button.setAttribute('aria-pressed',String(saved)); }
+    }
+  });
+}
+function toggleCurrentFavorite(){ toggleFavorite(currentList[currentIdx]); }
 /* ---------- Helpers ---------- */
 function fmtDur(s){s=+s||0;return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;}
 function esc(s){return (s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
@@ -1835,6 +1881,7 @@ function buildList(){
   const q = searchEl.value.toLowerCase(), src = sourceEl.value, k = sortEl.value;
   const list = DATA.filter(d=>{
     if(src!=='all' && d._source!==src) return false;
+    if(favoriteOnly && !isFavorite(d)) return false;
     if(!q) return true;
     return (d.text||'').toLowerCase().includes(q) || d.posted_utc.includes(q);
   });
@@ -1852,6 +1899,7 @@ function render(){
   if(!currentList.length){
     grid.innerHTML = '<div class="loading">ไม่พบวิดีโอ</div>';
     plList.innerHTML = '';
+    syncFavoriteControls();
     return;
   }
   const MAX_CARDS = 300;
@@ -1861,7 +1909,7 @@ function render(){
       : '🎬';
     const cls = d._source==='SoMay' ? 'src-so' : 'src-rw';
     return `<div class="card ${i===currentIdx?'playing':''}" data-i="${i}">
-      <div class="thumb">${thumb}</div>
+      <div class="thumb">${thumb}<button class="favorite-btn ${isFavorite(d)?'is-favorite':''}" type="button" aria-label="${isFavorite(d)?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'}" aria-pressed="${isFavorite(d)}">${isFavorite(d)?'★':'☆'}</button></div>
       <div class="info">
         <div><span class="badge ${cls}">${d._sourceLabel}</span>
           <span class="badge">👁 ${fmtViews(d.views)}</span>
@@ -1872,7 +1920,11 @@ function render(){
   if(currentList.length > MAX_CARDS){
     grid.innerHTML += `<div class="loading">แสดง ${MAX_CARDS} จาก ${currentList.length} — ใช้ค้นหา/ตัวกรองเพื่อดูเพิ่ม</div>`;
   }
-  grid.querySelectorAll('.card').forEach(el=>{ el.onclick=()=>openAt(+el.dataset.i,true); });
+  grid.querySelectorAll('.card').forEach(el=>{
+    el.onclick=()=>openAt(+el.dataset.i,true);
+    el.querySelector('.favorite-btn').onclick=e=>{ e.stopPropagation(); toggleFavorite(currentList[+el.dataset.i]); };
+  });
+  syncFavoriteControls();
   renderPlaylist();
 }
 
@@ -1957,7 +2009,7 @@ function openAt(i,fromUser){
 function updateDetails(d){
   detailsEl.innerHTML = `${d._sourceLabel}${d.text?' · '+esc(d.text):''} · 👁 ${d.views} · ⏱ ${fmtDur(d.duration_sec)}`
     + (d._res?` · 🔆 ${d._res}`:'')
-    + ` · <a href="${d.post_url}" target="_blank" rel="noopener">ทวีต ↗</a>`;
+    + ` · <a href="${d.post_url}" target="_blank" rel="noopener">ทวีต ↗</a> · <button id="favoriteCurrent" class="favorite-action ${isFavorite(d)?'is-favorite':''}" type="button" aria-pressed="${isFavorite(d)}" onclick="toggleCurrentFavorite()">${isFavorite(d)?'★ บันทึกแล้ว':'☆ เพิ่มรายการโปรด'}</button>`;
 }
 function retryCurrent(){ if(currentIdx>=0) openAt(currentIdx); }
 function nextVideo(){ if(currentIdx<currentList.length-1) openAt(currentIdx+1); }
@@ -1995,6 +2047,7 @@ btnNext.onclick = nextVideo;
 searchEl.oninput = ()=>{currentIdx=-1;render();};
 sortEl.onchange  = ()=>{currentIdx=-1;render();};
 sourceEl.onchange= ()=>{currentIdx=-1;render();};
+favoritesButton.onclick=()=>{favoriteOnly=!favoriteOnly; currentIdx=-1; render();};
 
 /* มือถือ: ปัดขึ้น = ถัดไป, ปัดลง = ก่อนหน้า (ไม่นับแถบควบคุมวิดีโอด้านล่าง) */
 let tx=0,ty=0,tOK=false;
@@ -2022,6 +2075,7 @@ document.addEventListener('keydown',e=>{
   try{
     DATA = parseRawData(RAW_DATA);
     console.log(`✓ โหลด ${DATA.length} วิดีโอ`);
+    syncFavoriteControls();
     if(!DATA.length){
       grid.innerHTML = '<div class="loading">ยังไม่มีข้อมูลวิดีโอ<br>ข้อมูลใน RAW_DATA ว่างเปล่า</div>';
       return;
