@@ -1,7 +1,8 @@
 const SOURCES = Object.freeze({
   SO: ['SoMay', 'So_May'],
   RW: ['Rewaida', 'Rewaida'],
-  CX: ['Rabbit Rayong', '@CxllmeB64']
+  CX: ['Rabbit Rayong', '@CxllmeB64'],
+  SU: ['Subhash', '@Subhash72782123']
 });
 
 function isHttpsHost(value, host) {

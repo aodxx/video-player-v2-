@@ -19,6 +19,13 @@ test('parses the Rabbit Rayong source code from imported catalogue rows', () => 
   assert.equal(video?.views, 23768);
 });
 
+test('parses the Subhash source code and label from imported catalogue rows', () => {
+  const [video] = parseRawData('SU|2026-11-13 15:57|https://x.com/Subhash72782123/status/2121271208033591401|https://video.twimg.com/amplify_video/2120417636249153536/vid/avc1/480x270/K7b2w9FSs-5PranK.mp4?tag=14||596|3816|sample clip');
+  assert.equal(video?.source, 'Subhash');
+  assert.equal(video?.sourceLabel, '@Subhash72782123');
+  assert.equal(video?.durationSeconds, 596);
+});
+
 test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
   if (typeof catalog.findDuplicateVideoUrls !== 'function') return;

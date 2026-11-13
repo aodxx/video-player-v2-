@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.0] - 2026-11-14
+
+### Added
+- Added the @Subhash72782123 source filter and imported 654 unique video URLs from the user-provided CSV.
+- Added source-specific card badge styling and parser support for `SU` records.
+
+### Notes
+- Excluded 224 CSV rows whose low-resolution media URLs already existed in the catalogue; distinct clips from the same post were retained.
+
 ## [2.2.1] - 2026-11-14
 
 ### Fixed
