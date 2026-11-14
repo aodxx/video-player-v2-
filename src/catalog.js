@@ -4,7 +4,8 @@ const SOURCES = Object.freeze({
   CX: ['Rabbit Rayong', '@CxllmeB64'],
   SU: ['Subhash', '@Subhash72782123'],
   LT: ['Lietongheng', '@lietongheng'],
-  NK: ['NNNKII88', '@NNNKII88']
+  NK: ['NNNKII88', '@NNNKII88'],
+  DP: ['Deepak', '@DeepakC92550200']
 });
 
 function isHttpsHost(value, host) {

@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.7.0] - 2026-11-15
+
+### Added
+- Added the @DeepakC92550200 source filter and 539 new high-resolution MP4 URLs from the supplied CSV, including both original posts and reposts.
+
+### Notes
+- The CSV contains 912 rows (192 original posts, 720 reposts); 373 items were already represented in the catalogue and were not duplicated (372 low URLs plus one high URL). Post captions were omitted because they contain gambling promotions and affiliate links. High-resolution URLs may use more bandwidth and buffer on slower connections.
+
+
 ## [2.5.0] - 2026-11-14
 
 ### Added
