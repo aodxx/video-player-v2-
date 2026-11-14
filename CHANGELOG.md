@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.0] - 2026-11-15
+
+### Changed
+- Made the standard catalogue URL the default playback quality to avoid automatic upgrades to the highest-resolution stream.
+- Kept maximum quality available as an explicit user choice and migrates older `auto`/`original` preferences to the safer standard mode.
+
+### Notes
+- The catalogue contains 15 URLs above a 720-pixel short edge without a lower-resolution variant recorded for the same media ID; those items still use their listed source URL in standard mode.
+
 ## [2.5.0] - 2026-11-14
 
 ### Added
