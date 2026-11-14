@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.8.0] - 2026-11-15
+
+### Added
+- Added the @thanhDO53161694 source filter and 245 new high-resolution MP4 URLs from the supplied CSV, including original posts and reposts.
+
+### Notes
+- The CSV contains 605 rows (136 original posts, 469 reposts); 360 items were already represented by a low- or high-resolution URL and were not duplicated. Captions containing gambling promotions and affiliate links were omitted. High-resolution streams may use more bandwidth and buffer on slower connections.
+
+
 ## [2.7.0] - 2026-11-15
 
 ### Added
