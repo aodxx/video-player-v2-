@@ -3,10 +3,10 @@
 ## [2.7.0] - 2026-11-15
 
 ### Added
-- Added the @DeepakC92550200 source filter and all 540 unique video URLs from the supplied CSV that were not already in the catalogue, including both original posts and reposts; used the lower-resolution MP4 URLs.
+- Added the @DeepakC92550200 source filter and 539 new high-resolution MP4 URLs from the supplied CSV, including both original posts and reposts.
 
 ### Notes
-- The CSV contained 192 original-post rows and 720 repost rows; 372 exact video URLs were already present in the catalogue and were not duplicated. Post captions were omitted because they contain gambling promotions and affiliate links.
+- The CSV contains 912 rows (192 original posts, 720 reposts); 373 items were already represented in the catalogue and were not duplicated (372 low URLs plus one high URL). Post captions were omitted because they contain gambling promotions and affiliate links. High-resolution URLs may use more bandwidth and buffer on slower connections.
 
 
 ## [2.5.0] - 2026-11-14
