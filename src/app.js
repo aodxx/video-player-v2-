@@ -155,7 +155,7 @@ function render(){
     const thumb = d.thumbnailUrl
       ? `<img src="${d.thumbnailUrl}" loading="lazy" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
       : '🎬';
-    const cls = ({ SoMay:'src-so', Rewaida:'src-rw', 'Rabbit Rayong':'src-cx', Subhash:'src-su', Lietongheng:'src-lt' })[d.source] || '';
+    const cls = ({ SoMay:'src-so', Rewaida:'src-rw', 'Rabbit Rayong':'src-cx', Subhash:'src-su', Lietongheng:'src-lt', NNNKII88:'src-nk' })[d.source] || '';
     return `<div class="card ${i===currentIdx?'playing':''}" data-i="${i}">
       <div class="thumb">${thumb}<button class="favorite-btn ${isFavorite(d)?'is-favorite':''}" type="button" aria-label="${isFavorite(d)?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'}" aria-pressed="${isFavorite(d)}">${isFavorite(d)?'★':'☆'}</button></div>
       <div class="info">

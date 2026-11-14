@@ -34,6 +34,14 @@ test('parses the Lietongheng source code and label for account-owned clips', () 
   assert.equal(video?.views, 64190);
 });
 
+test('parses the NNNKII88 source code and label', () => {
+  const [video] = parseRawData('NK|2026-11-13 3:23|https://x.com/NNNKII88/status/2121081588138287157|https://video.twimg.com/amplify_video/2121081490293587968/vid/avc1/720x1246/dDCEBGKc9pCX-SY0.mp4?tag=14||293|41758|');
+  assert.equal(video?.source, 'NNNKII88');
+  assert.equal(video?.sourceLabel, '@NNNKII88');
+  assert.equal(video?.durationSeconds, 293);
+  assert.equal(video?.views, 41758);
+});
+
 test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
   if (typeof catalog.findDuplicateVideoUrls !== 'function') return;

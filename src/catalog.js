@@ -3,7 +3,8 @@ const SOURCES = Object.freeze({
   RW: ['Rewaida', 'Rewaida'],
   CX: ['Rabbit Rayong', '@CxllmeB64'],
   SU: ['Subhash', '@Subhash72782123'],
-  LT: ['Lietongheng', '@lietongheng']
+  LT: ['Lietongheng', '@lietongheng'],
+  NK: ['NNNKII88', '@NNNKII88']
 });
 
 function isHttpsHost(value, host) {
