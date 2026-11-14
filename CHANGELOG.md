@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.7.0] - 2026-11-15
+
+### Added
+- Added the @DeepakC92550200 source filter and 147 unique account-authored clips using the lower-resolution MP4 URLs supplied in the CSV.
+
+### Notes
+- Excluded 720 repost rows and 45 video URLs already present in the catalogue; post captions were omitted because they contain gambling promotions and affiliate links.
+
+
 ## [2.5.0] - 2026-11-14
 
 ### Added

@@ -42,6 +42,14 @@ test('parses the NNNKII88 source code and label', () => {
   assert.equal(video?.views, 41758);
 });
 
+test('parses the Deepak source code and label for account-owned clips', () => {
+  const [video] = parseRawData('DP|2026-11-14 17:51|https://x.com/DeepakC92550200/status/2121632255064105329|https://video.twimg.com/amplify_video/2103773585596973056/vid/avc1/320x568/3E5aGOskoGziR4ti.mp4?tag=14||272|2248|');
+  assert.equal(video?.source, 'Deepak');
+  assert.equal(video?.sourceLabel, '@DeepakC92550200');
+  assert.equal(video?.durationSeconds, 272);
+  assert.equal(video?.views, 2248);
+});
+
 test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
   if (typeof catalog.findDuplicateVideoUrls !== 'function') return;
