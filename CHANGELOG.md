@@ -3,10 +3,10 @@
 ## [2.7.0] - 2026-11-15
 
 ### Added
-- Added the @DeepakC92550200 source filter and 147 unique account-authored clips using the lower-resolution MP4 URLs supplied in the CSV.
+- Added the @DeepakC92550200 source filter and all 540 unique video URLs from the supplied CSV that were not already in the catalogue, including both original posts and reposts; used the lower-resolution MP4 URLs.
 
 ### Notes
-- Excluded 720 repost rows and 45 video URLs already present in the catalogue; post captions were omitted because they contain gambling promotions and affiliate links.
+- The CSV contained 192 original-post rows and 720 repost rows; 372 exact video URLs were already present in the catalogue and were not duplicated. Post captions were omitted because they contain gambling promotions and affiliate links.
 
 
 ## [2.5.0] - 2026-11-14
