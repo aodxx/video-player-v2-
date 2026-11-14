@@ -1,12 +1,12 @@
 {
   "name": "video-player-v2",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
     "validate:data": "node scripts/validate-data.js",
-    "check": "node --check src/app.js && node --check src/catalog.js && node --check worker.js && npm test && npm run validate:data"
+    "check": "node --check src/app.js && node --check src/catalog.js && node --check src/quality.js && node --check worker.js && npm test && npm run validate:data"
   },
   "engines": {
     "node": ">=20"

@@ -1,4 +1,5 @@
 import { filterPlaylistItems, filterVideos, parseRawData } from './catalog.js';
+import { normalizeQualityPreference, shouldFetchHighestQuality } from './quality.js';
 
 /* ถ้าเปิดจาก GitHub Pages แล้ววิดีโอยัง 403 ให้ตั้งค่า เช่น
    const PROXY_PREFIX = 'https://your-worker.workers.dev/?url=';  */
@@ -18,9 +19,8 @@ const bufferStatus=$('bufferStatus');
 const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), qualityEl=$('qualityMode'), errorBox=$('errorBox');
 let visibleCardLimit = 300;
 const QUALITY_KEY = 'video-player-v2:quality';
-function normalizeQuality(value){return ['auto','original','max'].includes(value)?value:'auto';}
-function readQualityPreference(){try{return normalizeQuality(localStorage.getItem(QUALITY_KEY));}catch(e){return 'auto';}}
-function saveQualityPreference(){try{localStorage.setItem(QUALITY_KEY,normalizeQuality(qualityEl.value));}catch(e){console.warn('บันทึกคุณภาพไม่ได้',e);}}
+function readQualityPreference(){try{return normalizeQualityPreference(localStorage.getItem(QUALITY_KEY));}catch(e){return 'standard';}}
+function saveQualityPreference(){try{localStorage.setItem(QUALITY_KEY,normalizeQualityPreference(qualityEl.value));}catch(e){console.warn('บันทึกคุณภาพไม่ได้',e);}}
 qualityEl.value = readQualityPreference();
 
 /* ---------- Favorites: เก็บเฉพาะ URL โพสต์ ไม่แก้ไขชุดข้อมูลต้นฉบับ ---------- */
@@ -245,10 +245,10 @@ function openAt(i,fromUser){
     player.src = buildVideoUrl(url);
     player.load();
     player.play().catch(err=>console.log('autoplay blocked:',err.message));
-    const nx=currentList[i+1]; if(nx && qualityEl.value!=='original') resolveHQ(nx);   // โหลดล่วงหน้าคลิปถัดไป
+    const nx=currentList[i+1]; if(nx && shouldFetchHighestQuality(qualityEl.value,HQ_BASE)) resolveHQ(nx);   // โหลดล่วงหน้าคลิปถัดไป
   };
   const mode = qualityEl.value;
-  if(mode!=='original' && HQ_BASE){
+  if(shouldFetchHighestQuality(mode,HQ_BASE)){
     withTimeout(resolveHQ(d),2500).then(h=>{
       if(token!==openToken) return;
       if(h && (mode==='max' || pixels(h.url) > pixels(d.videoUrl))) startPlay(h.url,true,h.height);
@@ -265,7 +265,7 @@ function openAt(i,fromUser){
   showUI();
 }
 function updateDetails(d){
-  const playingQuality = d._usingHQ ? `สูงสุด${d._res?' · '+d._res:''}` : `ต้นฉบับ${d._res?' · '+d._res:''}`;
+  const playingQuality = d._usingHQ ? `สูงสุด${d._res?' · '+d._res:''}` : `ไฟล์ในรายการ${d._res?' · '+d._res:''}`;
   detailsEl.innerHTML = `${d.sourceLabel}${d.text?' · '+esc(d.text):''} · 👁 ${d.views} · ⏱ ${fmtDur(d.durationSeconds)} · กำลังเล่น: ${playingQuality}`
     + ` · <a href="${d.postUrl}" target="_blank" rel="noopener">ทวีต ↗</a> · <button id="favoriteCurrent" class="favorite-action ${isFavorite(d)?'is-favorite':''}" type="button" aria-pressed="${isFavorite(d)}">${isFavorite(d)?'★ บันทึกแล้ว':'☆ เพิ่มรายการโปรด'}</button>`;
 }
@@ -284,7 +284,7 @@ function applyQualityMode(){
     d._usingHQ=false; d._hqUrl=''; d._res=resolutionLabel(d.videoUrl);
     updateDetails(d); reloadPlayerAt(d.videoUrl,playbackPosition(),token,shouldResume());
   };
-  if(mode==='original' || !HQ_BASE){useOriginal();return;}
+  if(mode==='standard' || !HQ_BASE){useOriginal();return;}
   showBufferStatus('กำลังเปลี่ยนคุณภาพวิดีโอ…');
   withTimeout(resolveHQ(d),2500).then(h=>{
     if(token!==openToken) return;
