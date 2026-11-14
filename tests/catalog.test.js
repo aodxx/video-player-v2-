@@ -50,6 +50,14 @@ test('parses the Deepak source code and label for account-owned clips', () => {
   assert.equal(video?.views, 2248);
 });
 
+test('parses the Thanh Do source code and label', () => {
+  const [video] = parseRawData('TD|2026-11-14 17:35|https://x.com/thanhDO53161694/status/2121658201376731302|https://video.twimg.com/amplify_video/2120906596079546368/vid/avc1/720x1280/bAAhdFJTafa_8uRP.mp4?tag=29||33|9135|');
+  assert.equal(video?.source, 'Thanh Do');
+  assert.equal(video?.sourceLabel, '@thanhDO53161694');
+  assert.equal(video?.durationSeconds, 33);
+  assert.equal(video?.views, 9135);
+});
+
 test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
   if (typeof catalog.findDuplicateVideoUrls !== 'function') return;
