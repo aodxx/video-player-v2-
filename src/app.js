@@ -1,4 +1,5 @@
 import { filterPlaylistItems, filterVideos, parseRawData, summarizeSources } from './catalog.js';
+import { getAccountArtwork } from './account-art.js';
 import { countFavoritesForSource, isFavoriteForSource, loadFavoritesBySource, serializeFavoritesBySource, toggleFavoriteForSource } from './favorites.js';
 
 /* ถ้าเปิดจาก GitHub Pages แล้ววิดีโอยัง 403 ให้ตั้งค่า เช่น
@@ -153,8 +154,12 @@ function renderAccounts(){
   const summaries = summarizeSources(DATA);
   accountGrid.innerHTML = summaries.length ? summaries.map(account=>{
     const favoriteCount = countFavoritesForSource(favoritesBySource, account.source);
+    const artwork = getAccountArtwork(account.source);
+    const art = artwork
+      ? `<img class="account-art" src="${artwork}" alt="" aria-hidden="true" loading="lazy" decoding="async">`
+      : '<span class="account-art" aria-hidden="true"></span>';
     return `<button class="account-card" type="button" data-source="${esc(account.source)}">
-      <span class="account-art" aria-hidden="true"></span>
+      ${art}
       <span class="account-info">
         <span class="account-name">${esc(account.accountLabel)}</span>
         <span class="account-meta">${account.count} วิดีโอ</span>
