@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.1] - 2026-11-17
+
+### Fixed
+- Added the supplied thumbnail URLs to six existing duplicate-video records so their cards display covers without duplicating clips.
+
 ## [2.9.0] - 2026-11-16
 
 ### Added
