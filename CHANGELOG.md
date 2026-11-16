@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.11.0] - 2026-11-17
+
+### Added
+- Added nine neutral cinematic artworks to the account cards, with optimized local WebP assets.
+
 ## [2.10.0] - 2026-11-17
 
 ### Added
