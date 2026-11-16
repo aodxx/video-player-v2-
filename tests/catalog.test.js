@@ -58,6 +58,15 @@ test('parses the Thanh Do source code and label', () => {
   assert.equal(video?.views, 9135);
 });
 
+test('parses the Ginan459 source code, label, and thumbnail URL', () => {
+  const [video] = parseRawData('GN|2026-11-16|https://x.com/Ginan459/status/2122327578367152302|https://video.twimg.com/amplify_video/2121992780700655617/vid/avc1/960x720/qDYtQXcFaEFrv02N.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2121992780700655617/img/iMILyU5B6yf6hsFE.jpg|2595|781|');
+  assert.equal(video?.source, 'Ginan');
+  assert.equal(video?.sourceLabel, '@Ginan459');
+  assert.equal(video?.thumbnailUrl, 'https://pbs.twimg.com/amplify_video_thumb/2121992780700655617/img/iMILyU5B6yf6hsFE.jpg');
+  assert.equal(video?.durationSeconds, 2595);
+  assert.equal(video?.views, 781);
+});
+
 test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.equal(typeof catalog.findDuplicateVideoUrls, 'function');
   if (typeof catalog.findDuplicateVideoUrls !== 'function') return;

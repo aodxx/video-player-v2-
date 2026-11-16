@@ -6,7 +6,8 @@ const SOURCES = Object.freeze({
   LT: ['Lietongheng', '@lietongheng'],
   NK: ['NNNKII88', '@NNNKII88'],
   DP: ['Deepak', '@DeepakC92550200'],
-  TD: ['Thanh Do', '@thanhDO53161694']
+  TD: ['Thanh Do', '@thanhDO53161694'],
+  GN: ['Ginan', '@Ginan459']
 });
 
 function isHttpsHost(value, host) {
