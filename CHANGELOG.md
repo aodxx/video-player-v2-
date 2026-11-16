@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.9.0] - 2026-11-16
+
+### Added
+- Added the @Ginan459 source filter and 849 unique video clips from the supplied CSV, including provided thumbnail URLs.
+
+### Notes
+- The CSV contains 855 account-owned rows; 6 media IDs were already represented in the catalogue and were not duplicated (4 exact URL matches and 2 alternate renditions). The CSV provides `mp4_url` but no separate high-resolution URL field, so the supplied video URLs were imported as-is; resolution varies by row.
+
+
 ## [2.8.0] - 2026-11-15
 
 ### Added
