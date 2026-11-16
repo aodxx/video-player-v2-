@@ -8,13 +8,15 @@ const SOURCES = Object.freeze({
   DP: ['Deepak', '@DeepakC92550200'],
   TD: ['Thanh Do', '@thanhDO53161694'],
   GN: ['Ginan', '@Ginan459'],
-  RP: ['Reno16Promax1', '@reno16promax1']
+  RP: ['Reno16Promax1', '@reno16promax1'],
+  DS: ['Dedprajamsoy', '@dedprajamsoy']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
   SoMay: '@So_MayBDSM',
   Rewaida: '@RewaidaMohamed',
-  Reno16Promax1: '@reno16promax1'
+  Reno16Promax1: '@reno16promax1',
+  Dedprajamsoy: '@dedprajamsoy'
 });
 
 function isHttpsHost(value, host) {
