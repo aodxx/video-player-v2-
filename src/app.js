@@ -14,6 +14,7 @@ const favoritesButton=$('showFavorites');
 const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
+const desktopPrevButton=$('desktopPrev'), desktopNextButton=$('desktopNext');
 const bufferStatus=$('bufferStatus');
 const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), qualityEl=$('qualityMode'), errorBox=$('errorBox');
 let visibleCardLimit = 300;
@@ -192,11 +193,23 @@ function renderPlaylist(){
 }
 
 function updateActive(){
+  syncDesktopNavigation();
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('playing',+c.dataset.i===currentIdx));
   document.querySelectorAll('.pl-item').forEach(c=>{
     const a=+c.dataset.i===currentIdx; c.classList.toggle('active',a);
     if(a) c.scrollIntoView({block:'nearest'});
   });
+}
+
+function syncDesktopNavigation(){
+  const previous=currentIdx>0?currentList[currentIdx-1]:null;
+  const next=currentIdx>=0&&currentIdx<currentList.length-1?currentList[currentIdx+1]:null;
+  desktopPrevButton.disabled=!previous;
+  desktopNextButton.disabled=!next;
+  desktopPrevButton.title=previous?`คลิป ${currentIdx} จาก ${currentList.length} · ${previous.sourceLabel}`:'ไม่มีคลิปก่อนหน้า';
+  desktopNextButton.title=next?`คลิป ${currentIdx+2} จาก ${currentList.length} · ${next.sourceLabel}`:'ไม่มีคลิปถัดไป';
+  desktopPrevButton.setAttribute('aria-label',previous?`ก่อนหน้า: ${previous.sourceLabel}`:'ไม่มีคลิปก่อนหน้า');
+  desktopNextButton.setAttribute('aria-label',next?`คลิปถัดไป: ${next.sourceLabel}`:'ไม่มีคลิปถัดไป');
 }
 
 /* ---------- เต็มจอ (ทั้ง modal ไม่ใช่แค่ตัววิดีโอ) ---------- */
@@ -335,6 +348,8 @@ player.addEventListener('loadeddata',()=>errorBox.classList.remove('active'));
 /* ---------- ปุ่มและตัวกรอง ---------- */
 btnPrev.onclick = prevVideo;
 btnNext.onclick = nextVideo;
+desktopPrevButton.onclick = prevVideo;
+desktopNextButton.onclick = nextVideo;
 searchEl.oninput = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 sortEl.onchange  = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 sourceEl.onchange= ()=>{currentIdx=-1;visibleCardLimit=300;render();};
