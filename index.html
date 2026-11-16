@@ -20,6 +20,22 @@
   #showFavorites.active{border-color:#ffbd4a;color:#ffcf70;background:#382b16}
   #togglePlaylist{display:none}
   #loadMoreWrap{grid-column:1/-1;text-align:center;padding:12px}
+  #accountsView[hidden],#layout[hidden],#videoControls[hidden],#backToAccounts[hidden],#selectedAccountTitle[hidden]{display:none!important}
+  #videoControls{display:flex;flex:1;min-width:0;gap:10px;flex-wrap:wrap;align-items:center}
+  #selectedAccountTitle{font-size:15px;margin:0;white-space:nowrap}
+  #accountsView{max-width:1400px;margin:0 auto;padding:24px 16px 40px}
+  .accounts-heading{margin:0 0 16px}
+  .accounts-heading h2{font-size:20px;margin:0 0 6px}
+  .accounts-heading p{font-size:13px;color:#999;margin:0}
+  .account-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:14px}
+  .account-card{display:flex;flex-direction:column;width:100%;padding:0;overflow:hidden;text-align:left;
+                border:1px solid #333;border-radius:12px;background:#1c1c1c;color:#eee}
+  .account-card:hover{background:#242424;border-color:#555}
+  .account-card:focus-visible,#backToAccounts:focus-visible{outline:3px solid #4ea1ff;outline-offset:2px}
+  .account-art{display:block;width:100%;aspect-ratio:16/9;background:#252525;border-bottom:1px solid #333}
+  .account-info{display:grid;gap:5px;padding:12px}
+  .account-name{font-size:15px;font-weight:650;overflow-wrap:anywhere}
+  .account-meta{font-size:12px;color:#aaa}
   .card .thumb{position:relative}
   .favorite-btn{position:absolute;top:8px;right:8px;z-index:1;width:34px;height:34px;padding:0;
                 border-radius:50%;background:#000b;border:1px solid #fff5;color:#fff;font-size:19px;line-height:1}
@@ -32,7 +48,7 @@
   @media(max-width:900px){#layout{grid-template-columns:1fr;height:auto}#togglePlaylist{display:inline-block}}
 
   #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-        gap:10px;padding:14px;overflow-y:auto}
+        gap:10px;padding:14px;overflow-y:auto;grid-auto-rows:max-content}
   .card{background:#1c1c1c;border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .15s}
   .card:hover{transform:scale(1.03)}
   .card .thumb{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
@@ -57,6 +73,13 @@
     .card .info{font-size:14px}
     .badge{font-size:12px;padding:3px 7px}
     .card .meta{font-size:13px;margin-top:6px}
+    #accountsView{padding:18px 12px 28px}
+    .account-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .account-art{aspect-ratio:1/1}
+    .account-info{padding:10px;gap:4px}
+    .account-name{font-size:14px}
+    .account-meta{font-size:11px}
+    #selectedAccountTitle{white-space:normal}
   }
 
   #playlist{background:#161616;border-left:1px solid #2a2a2a;overflow:hidden;padding:10px;display:flex;flex-direction:column;min-height:0}
@@ -112,32 +135,34 @@
 </head>
 <body>
 
-<header>
-  <h1>🎬 Video Player</h1>
-  <select id="source">
-    <option value="all">ทุกแหล่ง</option>
-    <option value="SoMay">@So_MayBDSM</option>
-    <option value="Rewaida">@RewaidaMohamed</option>
-    <option value="Rabbit Rayong">@CxllmeB64 · Rabbit Rayong</option>
-    <option value="Subhash">@Subhash72782123</option>
-    <option value="Lietongheng">@lietongheng</option>
-    <option value="NNNKII88">@NNNKII88</option>
-    <option value="Deepak">@DeepakC92550200</option>
-    <option value="Ginan">@Ginan459</option>
-    <option value="Thanh Do">@thanhDO53161694</option>
-  </select>
-  <input id="search" type="search" placeholder="ค้นหา..." style="flex:1;min-width:150px">
-  <select id="sort">
-    <option value="date">เรียงตามวันที่</option>
-    <option value="views">เรียงตามยอดวิว</option>
-    <option value="duration">เรียงตามความยาว</option>
-  </select>
-  <button id="showFavorites" type="button" aria-pressed="false">☆ รายการโปรด 0</button>
-  <button id="togglePlaylist" type="button" aria-expanded="false">Playlist</button>
-  <span id="count"></span>
+<header id="appHeader">
+  <h1 id="appTitle">🎬 Video Player</h1>
+  <button id="backToAccounts" type="button" hidden>← เลือกบัญชี</button>
+  <h2 id="selectedAccountTitle" tabindex="-1" hidden></h2>
+  <div id="videoControls" hidden>
+    <input id="search" type="search" placeholder="ค้นหาในบัญชี..." aria-label="ค้นหาในบัญชี" style="flex:1;min-width:150px">
+    <select id="sort" aria-label="เรียงวิดีโอ">
+      <option value="date">เรียงตามวันที่</option>
+      <option value="views">เรียงตามยอดวิว</option>
+      <option value="duration">เรียงตามความยาว</option>
+    </select>
+    <button id="showFavorites" type="button" aria-pressed="false">☆ รายการโปรด 0</button>
+    <button id="togglePlaylist" type="button" aria-expanded="false">Playlist</button>
+    <span id="count"></span>
+  </div>
 </header>
 
-<div id="layout">
+<main id="accountsView">
+  <div class="accounts-heading">
+    <h2>เลือกบัญชี</h2>
+    <p>เลือกห้องที่ต้องการดูวิดีโอ</p>
+  </div>
+  <section id="accountGrid" class="account-grid" aria-label="บัญชีวิดีโอ">
+    <div class="loading">กำลังโหลดข้อมูล...</div>
+  </section>
+</main>
+
+<div id="layout" hidden>
   <div id="grid"><div class="loading">กำลังโหลดข้อมูล...</div></div>
   <aside id="playlist">
     <h3>Playlist</h3>

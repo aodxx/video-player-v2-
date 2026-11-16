@@ -134,6 +134,19 @@ test('filters by source, date/text query and favorite state without mutating inp
   assert.equal(videos.length, 2);
 });
 
+test('summarizes each account once with its label and video count', () => {
+  const videos = parseRawData([
+    'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
+    'RW|2026-11-05|https://x.com/b/status/234|https://video.twimg.com/b.mp4||30|50|',
+    'SO|2026-11-04|https://x.com/a/status/345|https://video.twimg.com/c.mp4||31|60|'
+  ].join('\n'));
+
+  assert.deepEqual(catalog.summarizeSources(videos), [
+    { source: 'SoMay', sourceLabel: 'So_May', accountLabel: '@So_MayBDSM', count: 2 },
+    { source: 'Rewaida', sourceLabel: 'Rewaida', accountLabel: '@RewaidaMohamed', count: 1 }
+  ]);
+});
+
 test('existing duplicate Ginan clips retain their supplied thumbnail URLs', () => {
   const rows = parseRawData(readFileSync(new URL('../data/videos.txt', import.meta.url), 'utf8'));
   const existingPosts = [
