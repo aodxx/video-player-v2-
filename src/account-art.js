@@ -9,7 +9,8 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   'Thanh Do': 'src/assets/accounts/thanh-do.webp',
   Ginan: 'src/assets/accounts/ginan.webp',
   Reno16Promax1: 'src/assets/accounts/reno16promax1.jpg',
-  Dedprajamsoy: 'src/assets/accounts/dedprajamsoy.jpg'
+  Dedprajamsoy: 'src/assets/accounts/dedprajamsoy.jpg',
+  'Ana Lopez': 'src/assets/accounts/ana-lopez.webp'
 });
 
 export function getAccountArtwork(source) {
