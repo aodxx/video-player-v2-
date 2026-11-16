@@ -10,6 +10,11 @@ const SOURCES = Object.freeze({
   GN: ['Ginan', '@Ginan459']
 });
 
+const ACCOUNT_LABELS = Object.freeze({
+  SoMay: '@So_MayBDSM',
+  Rewaida: '@RewaidaMohamed'
+});
+
 function isHttpsHost(value, host) {
   try {
     const url = new URL(value);
@@ -98,4 +103,21 @@ export function filterVideos(videos, { source = 'all', query = '', favorites = n
     if (!needle) return true;
     return `${video.text} ${video.postedAt}`.toLocaleLowerCase().includes(needle);
   });
+}
+
+export function summarizeSources(videos) {
+  const summaries = new Map();
+  for (const video of videos) {
+    if (!video?.source || !video?.sourceLabel) continue;
+    if (!summaries.has(video.source)) {
+      summaries.set(video.source, {
+        source: video.source,
+        sourceLabel: video.sourceLabel,
+        accountLabel: ACCOUNT_LABELS[video.source] || video.sourceLabel,
+        count: 0
+      });
+    }
+    summaries.get(video.source).count += 1;
+  }
+  return [...summaries.values()];
 }

@@ -1,4 +1,5 @@
-import { filterPlaylistItems, filterVideos, parseRawData } from './catalog.js';
+import { filterPlaylistItems, filterVideos, parseRawData, summarizeSources } from './catalog.js';
+import { countFavoritesForSource, isFavoriteForSource, loadFavoritesBySource, serializeFavoritesBySource, toggleFavoriteForSource } from './favorites.js';
 
 /* ถ้าเปิดจาก GitHub Pages แล้ววิดีโอยัง 403 ให้ตั้งค่า เช่น
    const PROXY_PREFIX = 'https://your-worker.workers.dev/?url=';  */
@@ -6,10 +7,13 @@ const PROXY_PREFIX = 'https://video-player-proxy.pantipa3826.workers.dev/?url=';
 
 
 /* ---------- State & DOM ---------- */
-let DATA = [], currentList = [], currentIdx = -1, openToken = 0;
+let DATA = [], currentList = [], currentIdx = -1, openToken = 0, selectedSource = null;
 const $ = id => document.getElementById(id);
 const grid=$('grid'), plList=$('plList'), countEl=$('count');
-const searchEl=$('search'), sortEl=$('sort'), sourceEl=$('source');
+const searchEl=$('search'), sortEl=$('sort');
+const accountsView=$('accountsView'), accountGrid=$('accountGrid'), layout=$('layout');
+const appTitle=$('appTitle'), selectedAccountTitle=$('selectedAccountTitle'), videoControls=$('videoControls');
+const backToAccountsButton=$('backToAccounts');
 const favoritesButton=$('showFavorites');
 const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
@@ -24,19 +28,20 @@ function readQualityPreference(){try{return normalizeQuality(localStorage.getIte
 function saveQualityPreference(){try{localStorage.setItem(QUALITY_KEY,normalizeQuality(qualityEl.value));}catch(e){console.warn('บันทึกคุณภาพไม่ได้',e);}}
 qualityEl.value = readQualityPreference();
 
-/* ---------- Favorites: เก็บเฉพาะ URL โพสต์ ไม่แก้ไขชุดข้อมูลต้นฉบับ ---------- */
-const FAVORITES_KEY = 'video-player-v2:favorites';
+/* ---------- Favorites: แยกตามบัญชี และเก็บ URL โพสต์โดยไม่แก้ catalogue ---------- */
+const LEGACY_FAVORITES_KEY = 'video-player-v2:favorites';
+const FAVORITES_KEY = 'video-player-v2:favorites:by-source';
 let favoriteOnly = false;
-let favorites = new Set();
-try {
-  const stored = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
-  if (Array.isArray(stored)) favorites = new Set(stored.filter(x => typeof x === 'string'));
-} catch (e) { console.warn('อ่านรายการโปรดไม่ได้', e); }
-function isFavorite(d){ return favorites.has(d.postUrl); }
+let favoritesBySource = new Map();
+function isFavorite(d){ return isFavoriteForSource(favoritesBySource, d); }
+function saveFavoritesBySource(){
+  try { localStorage.setItem(FAVORITES_KEY, serializeFavoritesBySource(favoritesBySource)); }
+  catch(e){ console.warn('บันทึกรายการโปรดไม่ได้', e); }
+}
 function syncFavoriteControls(){
   favoritesButton.classList.toggle('active', favoriteOnly);
   favoritesButton.setAttribute('aria-pressed', String(favoriteOnly));
-  favoritesButton.textContent = `${favoriteOnly?'★':'☆'} รายการโปรด ${favorites.size}`;
+  favoritesButton.textContent = `${favoriteOnly?'★':'☆'} รายการโปรด ${countFavoritesForSource(favoritesBySource, selectedSource)}`;
   const current = currentList[currentIdx];
   const modalButton = $('favoriteCurrent');
   if(modalButton){
@@ -47,15 +52,15 @@ function syncFavoriteControls(){
 }
 function toggleFavorite(d){
   if(!d) return;
-  if(isFavorite(d)) favorites.delete(d.postUrl); else favorites.add(d.postUrl);
-  try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); }
-  catch(e){ console.warn('บันทึกรายการโปรดไม่ได้', e); }
+  toggleFavoriteForSource(favoritesBySource, d.source, d.postUrl);
+  saveFavoritesBySource();
   syncFavoriteControls();
   if(favoriteOnly) render();
   else document.querySelectorAll('.card').forEach(card=>{
-    if(+card.dataset.i < currentList.length && currentList[+card.dataset.i].postUrl === d.postUrl){
+    const video=currentList[+card.dataset.i];
+    if(video && video.source === d.source && video.postUrl === d.postUrl){
       const button=card.querySelector('.favorite-btn');
-      if(button){ const saved=isFavorite(d); button.classList.toggle('is-favorite',saved); button.textContent=saved?'★':'☆'; button.setAttribute('aria-label',saved?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'); button.setAttribute('aria-pressed',String(saved)); }
+      if(button){ const saved=isFavorite(video); button.classList.toggle('is-favorite',saved); button.textContent=saved?'★':'☆'; button.setAttribute('aria-label',saved?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'); button.setAttribute('aria-pressed',String(saved)); }
     }
   });
 }
@@ -132,8 +137,9 @@ function resolutionLabel(u){const m=/\/(\d+)x(\d+)\//.exec(u||'');return m?m[2]+
 
 /* ---------- รายการ / แสดงผล ---------- */
 function buildList(){
+  if(!selectedSource) return [];
   const k = sortEl.value;
-  const list = filterVideos(DATA, { source: sourceEl.value, query: searchEl.value, favorites: favoriteOnly ? favorites : null });
+  const list = filterVideos(DATA, { source: selectedSource, query: searchEl.value, favorites: favoriteOnly ? (favoritesBySource.get(selectedSource) || new Set()) : null });
   list.sort((a,b)=>{
     if(k==='views')    return (+b.views)-(+a.views);
     if(k==='duration') return (+b.durationSeconds)-(+a.durationSeconds);
@@ -141,6 +147,58 @@ function buildList(){
     return key(b).localeCompare(key(a));
   });
   return list;
+}
+
+function renderAccounts(){
+  const summaries = summarizeSources(DATA);
+  accountGrid.innerHTML = summaries.length ? summaries.map(account=>{
+    const favoriteCount = countFavoritesForSource(favoritesBySource, account.source);
+    return `<button class="account-card" type="button" data-source="${esc(account.source)}">
+      <span class="account-art" aria-hidden="true"></span>
+      <span class="account-info">
+        <span class="account-name">${esc(account.accountLabel)}</span>
+        <span class="account-meta">${account.count} วิดีโอ</span>
+        <span class="account-meta">★ ${favoriteCount} รายการโปรด</span>
+      </span>
+    </button>`;
+  }).join('') : '<div class="loading">ยังไม่มีข้อมูลวิดีโอ</div>';
+}
+
+function openAccount(source){
+  const account = summarizeSources(DATA).find(item=>item.source===source);
+  if(!account) return;
+  selectedSource = account.source;
+  currentIdx = -1;
+  favoriteOnly = false;
+  visibleCardLimit = 300;
+  searchEl.value = '';
+  playlistSearchEl.value = '';
+  accountsView.hidden = true;
+  layout.hidden = false;
+  appTitle.hidden = true;
+  selectedAccountTitle.hidden = false;
+  selectedAccountTitle.textContent = account.accountLabel;
+  videoControls.hidden = false;
+  backToAccountsButton.hidden = false;
+  render();
+  selectedAccountTitle.focus();
+}
+
+function showAccounts(focusSource = selectedSource){
+  selectedSource = null;
+  currentIdx = -1;
+  favoriteOnly = false;
+  accountsView.hidden = false;
+  layout.hidden = true;
+  appTitle.hidden = false;
+  selectedAccountTitle.hidden = true;
+  videoControls.hidden = true;
+  backToAccountsButton.hidden = true;
+  renderAccounts();
+  if(focusSource){
+    const card = [...accountGrid.querySelectorAll('.account-card')].find(item=>item.dataset.source===focusSource);
+    card?.focus();
+  }
 }
 
 function render(){
@@ -352,7 +410,11 @@ desktopPrevButton.onclick = prevVideo;
 desktopNextButton.onclick = nextVideo;
 searchEl.oninput = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 sortEl.onchange  = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
-sourceEl.onchange= ()=>{currentIdx=-1;visibleCardLimit=300;render();};
+accountGrid.addEventListener('click', event=>{
+  const card = event.target.closest('.account-card');
+  if(card) openAccount(card.dataset.source);
+});
+backToAccountsButton.onclick = ()=>showAccounts(selectedSource);
 playlistSearchEl.oninput = renderPlaylist;
 qualityEl.onchange = applyQualityMode;
 favoritesButton.onclick=()=>{favoriteOnly=!favoriteOnly; currentIdx=-1; render();};
@@ -396,14 +458,17 @@ document.addEventListener('keydown',e=>{
     if (!dataResponse.ok) throw new Error(`โหลดข้อมูลไม่สำเร็จ (${dataResponse.status})`);
     DATA = parseRawData(await dataResponse.text());
     console.log(`✓ โหลด ${DATA.length} วิดีโอ`);
+    let scopedRaw = null, legacyRaw = null;
+    try {
+      scopedRaw = localStorage.getItem(FAVORITES_KEY);
+      legacyRaw = localStorage.getItem(LEGACY_FAVORITES_KEY);
+    } catch (e) { console.warn('อ่านรายการโปรดไม่ได้', e); }
+    favoritesBySource = loadFavoritesBySource(scopedRaw, legacyRaw, DATA);
+    saveFavoritesBySource();
     syncFavoriteControls();
-    if(!DATA.length){
-      grid.innerHTML = '<div class="loading">ยังไม่มีข้อมูลวิดีโอ<br>ไฟล์ data/videos.txt ว่างเปล่า</div>';
-      return;
-    }
-    render();
+    renderAccounts();
   }catch(e){
     console.error(e);
-    grid.innerHTML = `<div class="loading">❌ เกิดข้อผิดพลาด: ${esc(e.message)}</div>`;
+    accountGrid.innerHTML = `<div class="loading">❌ เกิดข้อผิดพลาด: ${esc(e.message)}</div>`;
   }
 })();

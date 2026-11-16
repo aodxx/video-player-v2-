@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.10.0] - 2026-11-17
+
+### Added
+- Added an account-first landing page with blank artwork cards, account video counts, and per-account favorites; existing favorites migrate into account buckets on first load.
+
+### Fixed
+- Kept video cards at their content height so thumbnails are no longer clipped in the account view.
+
 ## [2.9.1] - 2026-11-17
 
 ### Fixed
