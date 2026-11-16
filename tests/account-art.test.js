@@ -26,4 +26,7 @@ test('maps every video account to a distinct local artwork asset', async () => {
 
 test('returns null for sources without account artwork', () => {
   assert.equal(getAccountArtwork('unknown-account'), null);
+  assert.equal(getAccountArtwork('__proto__'), null);
+  assert.equal(getAccountArtwork('constructor'), null);
+  assert.equal(getAccountArtwork('toString'), null);
 });

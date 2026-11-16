@@ -11,5 +11,5 @@ export const ACCOUNT_ARTWORK = Object.freeze({
 });
 
 export function getAccountArtwork(source) {
-  return ACCOUNT_ARTWORK[source] || null;
+  return Object.hasOwn(ACCOUNT_ARTWORK, source) ? ACCOUNT_ARTWORK[source] : null;
 }
