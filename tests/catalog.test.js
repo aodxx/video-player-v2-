@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import * as catalog from '../src/catalog.js';
 
 const { parseRawData, filterVideos } = catalog;
@@ -131,4 +132,25 @@ test('filters by source, date/text query and favorite state without mutating inp
   const result = filterVideos(videos, { source: 'SoMay', query: 'blue', favorites: new Set(['https://x.com/a/status/12345']) });
   assert.deepEqual(result.map(video => video.postUrl), ['https://x.com/a/status/12345']);
   assert.equal(videos.length, 2);
+});
+
+test('existing duplicate Ginan clips retain their supplied thumbnail URLs', () => {
+  const rows = parseRawData(readFileSync(new URL('../data/videos.txt', import.meta.url), 'utf8'));
+  const existingPosts = [
+    'https://x.com/DeepakC92550200/status/2112892556778537465',
+    'https://x.com/Subhash72782123/status/2112928774945935711',
+    'https://x.com/DeepakC92550200/status/2112892532107743550',
+    'https://x.com/thanhDO53161694/status/2119495536822874342',
+    'https://x.com/RewaidaMohamed/status/2117157811302072455',
+    'https://x.com/DeepakC92550200/status/2112240359342555190'
+  ];
+  const videos = rows.filter(video => existingPosts.includes(video.postUrl));
+
+  assert.equal(videos.length, existingPosts.length);
+  for (const video of videos) {
+    const mediaId = video.videoUrl.match(/amplify_video\/(\d+)\//)?.[1];
+    assert.ok(video.thumbnailUrl, `${video.postUrl} should have a thumbnail`);
+    assert.ok(video.thumbnailUrl.startsWith('https://pbs.twimg.com/amplify_video_thumb/'));
+    assert.ok(video.thumbnailUrl.includes(`/${mediaId}/`) || video.thumbnailUrl.includes(`amplify_video_thumb/${mediaId}/`));
+  }
 });
