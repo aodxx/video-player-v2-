@@ -9,14 +9,16 @@ const SOURCES = Object.freeze({
   TD: ['Thanh Do', '@thanhDO53161694'],
   GN: ['Ginan', '@Ginan459'],
   RP: ['Reno16Promax1', '@reno16promax1'],
-  DS: ['Dedprajamsoy', '@dedprajamsoy']
+  DS: ['Dedprajamsoy', '@dedprajamsoy'],
+  AL: ['Ana Lopez', '@AnaLopez1210921']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
   SoMay: '@So_MayBDSM',
   Rewaida: '@RewaidaMohamed',
   Reno16Promax1: '@reno16promax1',
-  Dedprajamsoy: '@dedprajamsoy'
+  Dedprajamsoy: '@dedprajamsoy',
+  'Ana Lopez': '@AnaLopez1210921'
 });
 
 function isHttpsHost(value, host) {
