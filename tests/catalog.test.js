@@ -134,6 +134,18 @@ test('filters by source, date/text query and favorite state without mutating inp
   assert.equal(videos.length, 2);
 });
 
+test('parses the Reno16Promax1 source code and label for account clips', () => {
+  const [video] = parseRawData('RP|2026-11-16 15:54|https://x.com/reno16promax1/status/2122357654890889399|https://video.twimg.com/amplify_video/2122143422056423424/vid/avc1/700x1280/ahkf7h8onRvxxS8c.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2122143422056423424/img/PZGFBtfsojdcgNRg.jpg|467|16145|');
+  assert.deepEqual(video, {
+    source: 'Reno16Promax1', sourceLabel: '@reno16promax1',
+    postedAt: '2026-11-16 15:54',
+    postUrl: 'https://x.com/reno16promax1/status/2122357654890889399',
+    videoUrl: 'https://video.twimg.com/amplify_video/2122143422056423424/vid/avc1/700x1280/ahkf7h8onRvxxS8c.mp4?tag=29',
+    thumbnailUrl: 'https://pbs.twimg.com/amplify_video_thumb/2122143422056423424/img/PZGFBtfsojdcgNRg.jpg',
+    durationSeconds: 467, views: 16145, text: ''
+  });
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',

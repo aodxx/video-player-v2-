@@ -7,12 +7,14 @@ const SOURCES = Object.freeze({
   NK: ['NNNKII88', '@NNNKII88'],
   DP: ['Deepak', '@DeepakC92550200'],
   TD: ['Thanh Do', '@thanhDO53161694'],
-  GN: ['Ginan', '@Ginan459']
+  GN: ['Ginan', '@Ginan459'],
+  RP: ['Reno16Promax1', '@reno16promax1']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
   SoMay: '@So_MayBDSM',
-  Rewaida: '@RewaidaMohamed'
+  Rewaida: '@RewaidaMohamed',
+  Reno16Promax1: '@reno16promax1'
 });
 
 function isHttpsHost(value, host) {
