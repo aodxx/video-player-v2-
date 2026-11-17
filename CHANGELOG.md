@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.12.0] - 2026-11-17
+
+### Added
+- Added the @lxrvip1 source filter and 36 new unique video streams with verified post links and available metadata.
+
+### Notes
+- The public X Media results contained 46 video posts; 10 exact video URLs were already present and were not duplicated. Post text was not collected.
+
 ## [2.11.0] - 2026-11-17
 
 ### Added
