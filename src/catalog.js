@@ -15,6 +15,7 @@ const SOURCES = Object.freeze({
   JP: ['ลับเด็ด 18+', '@joupze'],
   HL: ['หลุดจากเทพ 🔱🔞', '@Hludcaktheph'],
   LX: ['Lxrvip1', '@lxrvip1'],
+  AA: ['ชอบแบบนี้', '@mariana20845787'],
   KA: ['Kaled46164207', '@Kaled46164207'],
   CH: ['Charles74943343', '@Charles74943343'],
   PP: ['porpine3344', '@porpine3344']
@@ -30,6 +31,7 @@ const ACCOUNT_LABELS = Object.freeze({
   'ลับเด็ด 18+': '@joupze',
   'หลุดจากเทพ 🔱🔞': '@Hludcaktheph',
   Lxrvip1: '@lxrvip1',
+  'ชอบแบบนี้': '@mariana20845787',
   Kaled46164207: '@Kaled46164207',
   Charles74943343: '@Charles74943343',
   porpine3344: '@porpine3344'
