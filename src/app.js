@@ -300,18 +300,37 @@ function updateActive(){
 
 /* ---------- เต็มจอ (ทั้ง modal ไม่ใช่แค่ตัววิดีโอ) ---------- */
 const fsEl = ()=>document.fullscreenElement||document.webkitFullscreenElement;
-function enterFS(){
-  const f = modal.requestFullscreen||modal.webkitRequestFullscreen;
-  if(f){try{const r=f.call(modal);r&&r.catch&&r.catch(()=>{});}catch(e){}}
+const appDisplayMode = window.navigator.standalone===true ||
+  ['standalone','fullscreen'].some(mode=>window.matchMedia?.(`(display-mode: ${mode})`).matches);
+if(appDisplayMode){
+  btnFS.hidden=true;
+  autofsEl.closest('label')?.setAttribute('hidden','');
 }
-function exitFS(){
+let fullscreenPending=false;
+function syncFullscreenButton(){
+  btnFS.textContent = fsEl()?'⤢ ออกเต็มจอ':'⛶ เต็มจอ';
+  btnFS.disabled=fullscreenPending;
+}
+async function enterFS(){
+  if(appDisplayMode || fullscreenPending || fsEl()) return;
+  const f = modal.requestFullscreen||modal.webkitRequestFullscreen;
+  if(!f) return;
+  fullscreenPending=true; syncFullscreenButton();
+  try{await f.call(modal);}catch(e){console.warn('เปิดเต็มจอไม่ได้',e);}
+  finally{fullscreenPending=false;syncFullscreenButton();}
+}
+async function exitFS(){
+  if(appDisplayMode || fullscreenPending || !fsEl()) return;
   const f = document.exitFullscreen||document.webkitExitFullscreen;
-  if(f&&fsEl()){try{const r=f.call(document);r&&r.catch&&r.catch(()=>{});}catch(e){}}
+  if(!f) return;
+  fullscreenPending=true; syncFullscreenButton();
+  try{await f.call(document);}catch(e){console.warn('ออกจากเต็มจอไม่ได้',e);}
+  finally{fullscreenPending=false;syncFullscreenButton();}
 }
 function toggleFS(){ fsEl()?exitFS():enterFS(); }
 ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>
   document.addEventListener(ev,()=>{
-    btnFS.textContent = fsEl()?'⤢ ออกเต็มจอ':'⛶ เต็มจอ';
+    syncFullscreenButton();
     showUI();
   }));
 

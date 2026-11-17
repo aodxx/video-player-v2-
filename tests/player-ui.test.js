@@ -33,6 +33,23 @@ test('automatic fullscreen is opt-in so Android Back closes the player predictab
     'show the player before requesting fullscreen');
 });
 
+test('installed app display modes avoid redundant system fullscreen transitions', () => {
+  assert.match(app, /\['standalone','fullscreen'\]\.some\(mode=>window\.matchMedia/,
+    'detect PWA display modes that already occupy the app window');
+  assert.match(app, /if\(appDisplayMode\)\{\s*btnFS\.hidden=true;/,
+    'hide the redundant fullscreen action in installed app windows');
+  assert.match(app, /async function enterFS\(\)\{\s*if\(appDisplayMode \|\| fullscreenPending \|\| fsEl\(\)\) return;/,
+    'do not request browser fullscreen while running as an installed app');
+});
+
+test('fullscreen transitions cannot be started again before the previous request settles', () => {
+  assert.match(app, /let fullscreenPending=false/);
+  assert.match(app, /async function enterFS\(\)\{\s*if\(appDisplayMode \|\| fullscreenPending \|\| fsEl\(\)\) return;/);
+  assert.match(app, /async function exitFS\(\)\{\s*if\(appDisplayMode \|\| fullscreenPending \|\| !fsEl\(\)\) return;/);
+  assert.match(app, /finally\{fullscreenPending=false;syncFullscreenButton\(\);\}/,
+    'always release the transition lock and refresh the actual button state');
+});
+
 test('opens the original source before resolving HQ and preserves playback when upgrading', () => {
   const openAt = app.slice(app.indexOf('function openAt('), app.indexOf('function updateDetails('));
   assert.ok(openAt.indexOf('startPlay(d.videoUrl);') < openAt.indexOf('withTimeout(resolveHQ(d),2500)'),
