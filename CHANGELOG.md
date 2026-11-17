@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.2] - 2026-11-18
+
+### Changed
+- Removed the duplicate text-only Playlist panel and its mobile toggle; kept the video-card grid, account filters, favorites, and sequential player controls.
+
 ## [2.12.1] - 2026-11-18
 
 ### Changed
