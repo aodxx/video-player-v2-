@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.1] - 2026-11-18
+
+### Changed
+- Simplified the video player overlay by removing duplicate clip-navigation buttons and moving quality, autoplay, fullscreen, and clip details into a collapsible “เพิ่มเติม” panel while keeping existing actions available.
+
 ## [2.12.0] - 2026-11-17
 
 ### Added
