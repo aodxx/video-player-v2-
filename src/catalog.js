@@ -12,7 +12,8 @@ const SOURCES = Object.freeze({
   DS: ['Dedprajamsoy', '@dedprajamsoy'],
   AL: ['Ana Lopez', '@AnaLopez1210921'],
   JL: ['Jean Lajemo', '@JeanLajemo2'],
-  JP: ['ลับเด็ด 18+', '@joupze']
+  JP: ['ลับเด็ด 18+', '@joupze'],
+  HL: ['หลุดจากเทพ 🔱🔞', '@Hludcaktheph']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -22,7 +23,8 @@ const ACCOUNT_LABELS = Object.freeze({
   Dedprajamsoy: '@dedprajamsoy',
   'Ana Lopez': '@AnaLopez1210921',
   'Jean Lajemo': '@JeanLajemo2',
-  'ลับเด็ด 18+': '@joupze'
+  'ลับเด็ด 18+': '@joupze',
+  'หลุดจากเทพ 🔱🔞': '@Hludcaktheph'
 });
 
 function isHttpsHost(value, host) {
