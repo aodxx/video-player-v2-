@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Browser Back on mobile and desktop now closes the active video player; the existing close button and Escape key remain available.
+
 ## [2.12.1] - 2026-11-18
 
 ### Changed

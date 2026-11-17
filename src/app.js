@@ -1,6 +1,7 @@
 import { filterPlaylistItems, filterVideos, parseRawData, summarizeSources } from './catalog.js';
 import { getAccountArtwork } from './account-art.js';
 import { countFavoritesForSource, isFavoriteForSource, loadFavoritesBySource, serializeFavoritesBySource, toggleFavoriteForSource } from './favorites.js';
+import { createPlayerHistoryController } from './player-history.js';
 
 /* ถ้าเปิดจาก GitHub Pages แล้ววิดีโอยัง 403 ให้ตั้งค่า เช่น
    const PROXY_PREFIX = 'https://your-worker.workers.dev/?url=';  */
@@ -18,6 +19,13 @@ const backToAccountsButton=$('backToAccounts');
 const favoritesButton=$('showFavorites');
 const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
+const playerHistory = createPlayerHistoryController({
+  historyApi: window.history,
+  eventTarget: window,
+  currentUrl: () => window.location.href,
+  isPlayerOpen: () => modal.classList.contains('active'),
+  closePlayer: () => closeModal(true)
+});
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
 const sourceDetailsEl=$('sourceDetails');
 const bufferStatus=$('bufferStatus');
@@ -294,6 +302,7 @@ player.addEventListener('pause',showUI);
 /* ---------- Player ---------- */
 function openAt(i,fromUser){
   if(i<0||i>=currentList.length) return;
+  if(!modal.classList.contains('active')) playerHistory.open();
   if(fromUser && autofsEl.checked && !fsEl()) enterFS();  // ต้องเรียกตอนผู้ใช้กดเท่านั้น
   currentIdx = i;
   const d = currentList[i];
@@ -367,13 +376,14 @@ function retryCurrent(){ if(currentIdx>=0) openAt(currentIdx); }
 function nextVideo(){ if(currentIdx<currentList.length-1) openAt(currentIdx+1); }
 function prevVideo(){ if(currentIdx>0) openAt(currentIdx-1); }
 
-function closeModal(){
+function closeModal(fromHistory=false){
   exitFS();
   modal.classList.remove('active');
   player.pause(); player.removeAttribute('src'); player.load();
   errorBox.classList.remove('active');
   currentIdx = -1;
   render();
+  if(!fromHistory) playerHistory.close();
 }
 
 player.addEventListener('loadstart',()=>{ showBufferStatus(); scheduleBufferRecovery(); });
