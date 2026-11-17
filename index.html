@@ -43,6 +43,7 @@
   .favorite-btn:hover{background:#30250f}
   .favorite-action{position:static;width:auto;height:auto;padding:6px 9px;border-radius:6px;
                    font-size:12px;line-height:1.2;white-space:nowrap}
+  .favorite-action.is-favorite{color:#ffca55;border-color:#ffca55}
 
   #layout{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 60px)}
   @media(max-width:900px){#layout{grid-template-columns:1fr;height:auto}#togglePlaylist{display:inline-block}}
@@ -71,6 +72,11 @@
   .card.playing{outline:3px solid #4ea1ff}
 
   @media(max-width:600px){
+    .round{width:44px;height:44px;font-size:18px}
+    #btnPrev{left:8px} #btnNext{right:8px}
+    .bottombar{bottom:56px;padding:20px 8px 6px}
+    .player-primary{gap:7px}
+    #sourceDetails{max-width:42vw;font-size:11px}
     .favorite-btn{width:44px;height:44px;font-size:23px}
     .card .info{font-size:14px}
     .badge{font-size:12px;padding:3px 7px}
@@ -103,27 +109,41 @@
   #player{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   #ui{position:absolute;inset:0;pointer-events:none;transition:opacity .25s}
   #ui.hide{opacity:0}
-  #ui button,#ui label,#ui a{pointer-events:auto}
-  #ui.hide button,#ui.hide label,#ui.hide a{pointer-events:none}
+  #ui button,#ui label,#ui a,#ui summary{pointer-events:auto}
+  #ui.hide button,#ui.hide label,#ui.hide a,#ui.hide summary{pointer-events:none}
   .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;
           align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 14px 28px;
           background:linear-gradient(#000c,transparent);font-size:13px}
-  .round{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;
-         border-radius:50%;font-size:22px;background:#000a;border:1px solid #fff4;color:#fff}
+  .round{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;
+         border-radius:50%;font-size:20px;background:#0009;border:1px solid #fff4;color:#fff}
   #btnPrev{left:12px} #btnNext{right:12px}
-  .desktop-nav{position:absolute;right:18px;bottom:96px;z-index:3;display:flex;gap:8px}
-  .desktop-nav button{min-height:48px;padding:0 14px;background:#111d;border-color:#fff7;
-                      font-size:14px;font-weight:600;white-space:nowrap}
-  .desktop-nav button:disabled{opacity:.4}
-  @media(max-width:900px){.desktop-nav{display:none}}
   .bottombar{position:absolute;left:0;right:0;bottom:60px;padding:24px 14px 8px;display:flex;
-             gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:12px;
+             justify-content:center;align-items:center;font-size:12px;
              color:#ccc;background:linear-gradient(transparent,#000b)}
   .bottombar a{color:#4ea1ff}
+  .player-primary{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+  #sourceDetails{max-width:min(50vw,520px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+                 color:#fff;font-weight:600;text-shadow:0 1px 3px #000}
+  #playerMore{position:relative}
+  #playerMore summary{list-style:none;padding:7px 10px;border:1px solid #fff5;border-radius:7px;
+                      background:#111d;color:#eee;cursor:pointer;font-size:12px}
+  #playerMore summary::-webkit-details-marker{display:none}
+  #playerMore[open] summary{background:#292929}
+  .more-content{position:absolute;right:0;bottom:calc(100% + 8px);width:min(92vw,420px);
+                max-height:min(60vh,440px);overflow:auto;padding:12px;border:1px solid #ffffff30;
+                border-radius:10px;background:#151515f5;box-shadow:0 8px 28px #000b;color:#eee}
+  @media(max-width:600px){
+    .more-content{position:fixed;left:50%;right:auto;bottom:calc(70px + env(safe-area-inset-bottom));
+                  transform:translateX(-50%);width:min(calc(100vw - 16px),380px)}
+  }
+  .settings-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;
+                border-bottom:1px solid #ffffff20}
   .autonext{display:flex;align-items:center;gap:6px}
   .autonext input{width:auto}
   .quality-control{display:flex;align-items:center;gap:6px;white-space:nowrap}
   .quality-control select{max-width:132px;padding:6px}
+  #details{padding-top:10px;line-height:1.7;overflow-wrap:anywhere}
+  #details a,#details button{margin-right:8px}
   #errorBox{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
             width:min(92%,520px);background:#4a2020;color:#ffaaaa;padding:14px;border-radius:8px;
             font-size:13px;line-height:1.6;z-index:5}
@@ -185,21 +205,28 @@
         <span id="pos">- / -</span>
         <button id="btnFS">⛶ เต็มจอ</button>
       </div>
-      <button class="round" id="btnPrev">◀</button>
-      <button class="round" id="btnNext">▶</button>
-      <div class="desktop-nav" aria-label="ควบคุมคลิป">
-        <button id="desktopPrev" type="button" disabled>◀ ก่อนหน้า</button>
-        <button id="desktopNext" type="button" disabled>คลิปถัดไป ▶</button>
-      </div>
+      <button class="round" id="btnPrev" type="button" aria-label="คลิปก่อนหน้า" title="คลิปก่อนหน้า" disabled>◀</button>
+      <button class="round" id="btnNext" type="button" aria-label="คลิปถัดไป" title="คลิปถัดไป" disabled>▶</button>
       <div class="bottombar">
-        <label class="autonext"><input type="checkbox" id="autonext" checked> เล่นต่ออัตโนมัติ</label>
-        <label class="autonext"><input type="checkbox" id="autofs" checked> เปิดเต็มจอทันที</label>
-        <label class="quality-control">คุณภาพ <select id="qualityMode" aria-label="คุณภาพวิดีโอ">
-          <option value="auto">อัตโนมัติ</option>
-          <option value="original">ต้นฉบับ</option>
-          <option value="max">สูงสุด</option>
-        </select></label>
-        <span id="details"></span>
+        <div class="player-primary">
+          <span id="sourceDetails"></span>
+          <button id="favoriteCurrent" class="favorite-action" type="button" aria-pressed="false">☆ เพิ่มรายการโปรด</button>
+          <details id="playerMore">
+            <summary>เพิ่มเติม</summary>
+            <div class="more-content">
+              <div class="settings-row">
+                <label class="autonext"><input type="checkbox" id="autonext" checked> เล่นต่ออัตโนมัติ</label>
+                <label class="autonext"><input type="checkbox" id="autofs" checked> เปิดเต็มจอทันที</label>
+                <label class="quality-control">คุณภาพ <select id="qualityMode" aria-label="คุณภาพวิดีโอ">
+                  <option value="auto">อัตโนมัติ</option>
+                  <option value="original">ต้นฉบับ</option>
+                  <option value="max">สูงสุด</option>
+                </select></label>
+              </div>
+              <span id="details"></span>
+            </div>
+          </details>
+        </div>
       </div>
     </div>
 

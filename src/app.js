@@ -19,7 +19,7 @@ const favoritesButton=$('showFavorites');
 const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
-const desktopPrevButton=$('desktopPrev'), desktopNextButton=$('desktopNext');
+const sourceDetailsEl=$('sourceDetails');
 const bufferStatus=$('bufferStatus');
 const btnFS=$('btnFS'), autonextEl=$('autonext'), autofsEl=$('autofs'), qualityEl=$('qualityMode'), errorBox=$('errorBox');
 let visibleCardLimit = 300;
@@ -256,23 +256,11 @@ function renderPlaylist(){
 }
 
 function updateActive(){
-  syncDesktopNavigation();
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('playing',+c.dataset.i===currentIdx));
   document.querySelectorAll('.pl-item').forEach(c=>{
     const a=+c.dataset.i===currentIdx; c.classList.toggle('active',a);
     if(a) c.scrollIntoView({block:'nearest'});
   });
-}
-
-function syncDesktopNavigation(){
-  const previous=currentIdx>0?currentList[currentIdx-1]:null;
-  const next=currentIdx>=0&&currentIdx<currentList.length-1?currentList[currentIdx+1]:null;
-  desktopPrevButton.disabled=!previous;
-  desktopNextButton.disabled=!next;
-  desktopPrevButton.title=previous?`คลิป ${currentIdx} จาก ${currentList.length} · ${previous.sourceLabel}`:'ไม่มีคลิปก่อนหน้า';
-  desktopNextButton.title=next?`คลิป ${currentIdx+2} จาก ${currentList.length} · ${next.sourceLabel}`:'ไม่มีคลิปถัดไป';
-  desktopPrevButton.setAttribute('aria-label',previous?`ก่อนหน้า: ${previous.sourceLabel}`:'ไม่มีคลิปก่อนหน้า');
-  desktopNextButton.setAttribute('aria-label',next?`คลิปถัดไป: ${next.sourceLabel}`:'ไม่มีคลิปถัดไป');
 }
 
 /* ---------- เต็มจอ (ทั้ง modal ไม่ใช่แค่ตัววิดีโอ) ---------- */
@@ -335,6 +323,8 @@ function openAt(i,fromUser){
   posEl.textContent = `${i+1} / ${currentList.length}`;
   btnPrev.disabled = (i<=0);
   btnNext.disabled = (i>=currentList.length-1);
+  btnPrev.title = i>0 ? `คลิปก่อนหน้า · ${currentList[i-1].sourceLabel}` : 'ไม่มีคลิปก่อนหน้า';
+  btnNext.title = i<currentList.length-1 ? `คลิปถัดไป · ${currentList[i+1].sourceLabel}` : 'ไม่มีคลิปถัดไป';
   updateDetails(d);
   modal.classList.add('active');
   updateActive();
@@ -342,8 +332,11 @@ function openAt(i,fromUser){
 }
 function updateDetails(d){
   const playingQuality = d._usingHQ ? `สูงสุด${d._res?' · '+d._res:''}` : `ต้นฉบับ${d._res?' · '+d._res:''}`;
-  detailsEl.innerHTML = `${d.sourceLabel}${d.text?' · '+esc(d.text):''} · 👁 ${d.views} · ⏱ ${fmtDur(d.durationSeconds)} · กำลังเล่น: ${playingQuality}`
-    + ` · <a href="${d.postUrl}" target="_blank" rel="noopener">ทวีต ↗</a> · <button id="favoriteCurrent" class="favorite-action ${isFavorite(d)?'is-favorite':''}" type="button" aria-pressed="${isFavorite(d)}">${isFavorite(d)?'★ บันทึกแล้ว':'☆ เพิ่มรายการโปรด'}</button>`;
+  sourceDetailsEl.textContent = d.sourceLabel;
+  detailsEl.innerHTML = `${d.text?`<div>${esc(d.text)}</div>`:''}`
+    + `<div>ยอดดู ${fmtViews(d.views)} · ความยาว ${fmtDur(d.durationSeconds)} · คุณภาพ ${playingQuality}</div>`
+    + `<a href="${d.postUrl}" target="_blank" rel="noopener">เปิดโพสต์ต้นทาง ↗</a>`;
+  syncFavoriteControls();
 }
 function applyQualityMode(){
   saveQualityPreference();
@@ -411,8 +404,6 @@ player.addEventListener('loadeddata',()=>errorBox.classList.remove('active'));
 /* ---------- ปุ่มและตัวกรอง ---------- */
 btnPrev.onclick = prevVideo;
 btnNext.onclick = nextVideo;
-desktopPrevButton.onclick = prevVideo;
-desktopNextButton.onclick = nextVideo;
 searchEl.oninput = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 sortEl.onchange  = ()=>{currentIdx=-1;visibleCardLimit=300;render();};
 accountGrid.addEventListener('click', event=>{
@@ -428,7 +419,7 @@ btnFS.onclick = toggleFS;
 $('btnRetry').onclick = retryCurrent;
 $('btnSkip').onclick = nextVideo;
 $('btnOpenVideo').onclick = () => { const current = currentList[currentIdx]; if (current) window.open(current.videoUrl, '_blank', 'noopener'); };
-detailsEl.addEventListener('click', event => { if (event.target.closest('#favoriteCurrent')) toggleCurrentFavorite(); });
+$('favoriteCurrent').onclick = toggleCurrentFavorite;
 togglePlaylistButton.onclick = () => {
   const opened = playlist.classList.toggle('mobile-open');
   togglePlaylistButton.setAttribute('aria-expanded', String(opened));
