@@ -197,6 +197,14 @@ test('parses the lxrvip1 source code and account label', () => {
   assert.equal(video?.views, 5534);
 });
 
+test('parses the mariana20845787 source code and account label', () => {
+  const [video] = parseRawData('AA|2026-11-17 09:56|https://x.com/mariana20845787/status/2122630027519176803|https://video.twimg.com/amplify_video/2122606843017191424/vid/avc1/1280x720/mUIWscdU8bZ6QT25.mp4?tag=14|https://pbs.twimg.com/amplify_video_thumb/2122606843017191424/img/yDx0_peWZipvsVQr.jpg|596|15698|sample clip');
+  assert.equal(video?.source, 'ชอบแบบนี้');
+  assert.equal(video?.sourceLabel, '@mariana20845787');
+  assert.equal(video?.postedAt, '2026-11-17 09:56');
+  assert.equal(video?.durationSeconds, 596);
+  assert.equal(video?.views, 15698);
+});
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
