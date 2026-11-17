@@ -197,6 +197,14 @@ test('parses the lxrvip1 source code and account label', () => {
   assert.equal(video?.views, 5534);
 });
 
+test('parses the Mariana account source code and label', () => {
+  const [video] = parseRawData('MA|2026-11-16 17:12|https://x.com/mariana20845787/status/2122271610627584052|https://video.twimg.com/amplify_video/2122271498878767104/vid/avc1/720x1280/0ngYpiwTAbuM4YV0.mp4?tag=14|https://pbs.twimg.com/amplify_video_thumb/2122271498878767104/img/yj-hUxPw6R9X7C4p.jpg|597|32892|');
+  assert.equal(video?.source, 'Mariana20845787');
+  assert.equal(video?.sourceLabel, '@mariana20845787');
+  assert.equal(video?.durationSeconds, 597);
+  assert.equal(video?.views, 32892);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',

@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.13.0] - 2026-11-17
+
+### Added
+- Added the @mariana20845787 account card with neutral local artwork and 313 new unique video streams, including available X thumbnail URLs.
+
+### Notes
+- The X profile run was source-exhausted at 333 video posts; 19 exact video URLs were already catalogued and one repeated URL within the fetched results was deduplicated. 302 newly added rows are account posts and 11 are reposts.
+
 ## [2.12.0] - 2026-11-17
 
 ### Added
