@@ -14,7 +14,10 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   'Jean Lajemo': 'src/assets/accounts/jean-lajemo.webp',
   'ลับเด็ด 18+': 'src/assets/accounts/joupze.jpg',
   'หลุดจากเทพ 🔱🔞': 'src/assets/accounts/hludcaktheph.webp',
-  'ชอบแบบนี้': 'src/assets/accounts/mariana20845787.jpg'
+  'ชอบแบบนี้': 'src/assets/accounts/mariana20845787.jpg',
+  Kaled46164207: 'src/assets/accounts/kaled46164207.webp',
+  Charles74943343: 'src/assets/accounts/charles74943343.webp',
+  porpine3344: 'src/assets/accounts/porpine3344.webp'
 });
 
 export function getAccountArtwork(source) {
