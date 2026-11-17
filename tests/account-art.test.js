@@ -22,12 +22,14 @@ const expectedArtwork = {
   'ชอบแบบนี้': 'src/assets/accounts/mariana20845787.jpg',
   Kaled46164207: 'src/assets/accounts/kaled46164207.webp',
   Charles74943343: 'src/assets/accounts/charles74943343.webp',
-  porpine3344: 'src/assets/accounts/porpine3344.webp'
+  porpine3344: 'src/assets/accounts/porpine3344.webp',
+  GalaGGyp: 'src/assets/accounts/galaggyp.jpg',
+  Yesyesn2m7: 'src/assets/accounts/yesyesn2m7.jpg'
 };
 
 test('maps every video account to a distinct local artwork asset', async () => {
   assert.deepEqual(ACCOUNT_ARTWORK, expectedArtwork);
-  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 19);
+  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 21);
   for (const [source, path] of Object.entries(expectedArtwork)) {
     assert.equal(getAccountArtwork(source), path);
     await access(new URL(`../${path}`, import.meta.url));

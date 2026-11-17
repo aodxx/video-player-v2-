@@ -17,7 +17,9 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   'ชอบแบบนี้': 'src/assets/accounts/mariana20845787.jpg',
   Kaled46164207: 'src/assets/accounts/kaled46164207.webp',
   Charles74943343: 'src/assets/accounts/charles74943343.webp',
-  porpine3344: 'src/assets/accounts/porpine3344.webp'
+  porpine3344: 'src/assets/accounts/porpine3344.webp',
+  GalaGGyp: 'src/assets/accounts/galaggyp.jpg',
+  Yesyesn2m7: 'src/assets/accounts/yesyesn2m7.jpg'
 });
 
 export function getAccountArtwork(source) {

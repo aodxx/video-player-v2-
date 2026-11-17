@@ -18,7 +18,9 @@ const SOURCES = Object.freeze({
   AA: ['ชอบแบบนี้', '@mariana20845787'],
   KA: ['Kaled46164207', '@Kaled46164207'],
   CH: ['Charles74943343', '@Charles74943343'],
-  PP: ['porpine3344', '@porpine3344']
+  PP: ['porpine3344', '@porpine3344'],
+  GG: ['GalaGGyp', '@GalaGGyp'],
+  YY: ['Yesyesn2m7', '@Yesyesn2m7']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -34,7 +36,9 @@ const ACCOUNT_LABELS = Object.freeze({
   'ชอบแบบนี้': '@mariana20845787',
   Kaled46164207: '@Kaled46164207',
   Charles74943343: '@Charles74943343',
-  porpine3344: '@porpine3344'
+  porpine3344: '@porpine3344',
+  GalaGGyp: '@GalaGGyp',
+  Yesyesn2m7: '@Yesyesn2m7'
 });
 
 function isHttpsHost(value, host) {
