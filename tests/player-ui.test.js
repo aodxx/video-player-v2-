@@ -24,6 +24,15 @@ test('less-used controls and clip details are inside a closed More panel', () =>
   assert.match(app, /sourceDetailsEl\.textContent = d\.sourceLabel/);
 });
 
+test('bottom player actions do not add a dark overlay or text shadow over the video', () => {
+  const bottomBar = html.match(/\.bottombar\{([^}]*)\}/)?.[1] || '';
+  const sourceDetails = html.match(/#sourceDetails\{([^}]*)\}/)?.[1] || '';
+  assert.doesNotMatch(bottomBar, /background\s*:/,
+    'favorite and More actions should not sit on a dark gradient strip');
+  assert.doesNotMatch(sourceDetails, /text-shadow\s*:/,
+    'source text should not cast a dark shadow over the video');
+});
+
 test('automatic fullscreen is opt-in so Android Back closes the player predictably', () => {
   const control = html.match(/<input\b[^>]*id="autofs"[^>]*>/);
   assert.ok(control, 'automatic fullscreen control must remain available');
