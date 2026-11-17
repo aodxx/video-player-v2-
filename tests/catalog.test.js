@@ -186,6 +186,17 @@ test('parses the Dedprajamsoy source code and label for account clips', () => {
   });
 });
 
+test('parses the lxrvip1 source code and account label', () => {
+  const [video] = parseRawData('LX|2026-11-16 23:33|https://x.com/lxrvip1/status/2122473229961097553|https://video.twimg.com/amplify_video/2122472681006350336/vid/avc1/1280x720/mM2OMkwU9HRdbRJZ.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2122472681006350336/img/OfqalxqP0grxzbW7.jpg|1354|5534|');
+  assert.equal(video?.source, 'Lxrvip1');
+  assert.equal(video?.sourceLabel, '@lxrvip1');
+  assert.equal(video?.postedAt, '2026-11-16 23:33');
+  assert.equal(video?.postUrl, 'https://x.com/lxrvip1/status/2122473229961097553');
+  assert.equal(video?.videoUrl, 'https://video.twimg.com/amplify_video/2122472681006350336/vid/avc1/1280x720/mM2OMkwU9HRdbRJZ.mp4?tag=29');
+  assert.equal(video?.durationSeconds, 1354);
+  assert.equal(video?.views, 5534);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
