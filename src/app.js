@@ -333,6 +333,7 @@ function openAt(i,fromUser,fromHistory=false){
     if(modal.classList.contains('active')) playerHistory.updatePlayer(selectedSource,currentList[i].videoUrl,viewState);
     else playerHistory.openPlayer(selectedSource,currentList[i].videoUrl,viewState);
   }
+  modal.classList.add('active');
   if(fromUser && autofsEl.checked && !fsEl()) enterFS();  // ต้องเรียกตอนผู้ใช้กดเท่านั้น
   currentIdx = i;
   const d = currentList[i];
@@ -365,7 +366,6 @@ function openAt(i,fromUser,fromHistory=false){
   btnPrev.title = i>0 ? `คลิปก่อนหน้า · ${currentList[i-1].sourceLabel}` : 'ไม่มีคลิปก่อนหน้า';
   btnNext.title = i<currentList.length-1 ? `คลิปถัดไป · ${currentList[i+1].sourceLabel}` : 'ไม่มีคลิปถัดไป';
   updateDetails(d);
-  modal.classList.add('active');
   updateActive();
   showUI();
 }
