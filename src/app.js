@@ -1,4 +1,4 @@
-import { filterPlaylistItems, filterVideos, parseRawData, summarizeSources } from './catalog.js';
+import { filterVideos, parseRawData, summarizeSources } from './catalog.js';
 import { getAccountArtwork } from './account-art.js';
 import { countFavoritesForSource, isFavoriteForSource, loadFavoritesBySource, serializeFavoritesBySource, toggleFavoriteForSource } from './favorites.js';
 
@@ -10,13 +10,12 @@ const PROXY_PREFIX = 'https://video-player-proxy.pantipa3826.workers.dev/?url=';
 /* ---------- State & DOM ---------- */
 let DATA = [], currentList = [], currentIdx = -1, openToken = 0, selectedSource = null;
 const $ = id => document.getElementById(id);
-const grid=$('grid'), plList=$('plList'), countEl=$('count');
+const grid=$('grid'), countEl=$('count');
 const searchEl=$('search'), sortEl=$('sort');
 const accountsView=$('accountsView'), accountGrid=$('accountGrid'), layout=$('layout');
 const appTitle=$('appTitle'), selectedAccountTitle=$('selectedAccountTitle'), videoControls=$('videoControls');
 const backToAccountsButton=$('backToAccounts');
 const favoritesButton=$('showFavorites');
-const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
 const sourceDetailsEl=$('sourceDetails');
@@ -177,7 +176,6 @@ function openAccount(source){
   favoriteOnly = false;
   visibleCardLimit = 300;
   searchEl.value = '';
-  playlistSearchEl.value = '';
   accountsView.hidden = true;
   layout.hidden = false;
   appTitle.hidden = true;
@@ -211,7 +209,6 @@ function render(){
   countEl.textContent = `${currentList.length} วิดีโอ`;
   if(!currentList.length){
     grid.innerHTML = '<div class="loading">ไม่พบวิดีโอ</div>';
-    plList.innerHTML = '';
     syncFavoriteControls();
     return;
   }
@@ -238,29 +235,10 @@ function render(){
     el.querySelector('.favorite-btn').onclick=e=>{ e.stopPropagation(); toggleFavorite(currentList[+el.dataset.i]); };
   });
   syncFavoriteControls();
-  renderPlaylist();
-}
-
-function renderPlaylist(){
-  const items = filterPlaylistItems(currentList, playlistSearchEl.value);
-  plList.innerHTML = items.length ? items.map(({video:d,index:i})=>`
-    <div class="pl-item ${i===currentIdx?'active':''}" data-i="${i}">
-      <span class="num">${i+1}.</span>
-      <span>${fmtDur(d.durationSeconds)} · 👁${fmtViews(d.views)} · ${d.sourceLabel}</span>
-    </div>`).join('') : '<div class="loading">ไม่พบรายการใน Playlist</div>';
-  plList.querySelectorAll('.pl-item').forEach(el=>{ el.onclick=()=>{
-    openAt(+el.dataset.i,true);
-    playlist.classList.remove('mobile-open');
-    togglePlaylistButton.setAttribute('aria-expanded','false');
-  }; });
 }
 
 function updateActive(){
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('playing',+c.dataset.i===currentIdx));
-  document.querySelectorAll('.pl-item').forEach(c=>{
-    const a=+c.dataset.i===currentIdx; c.classList.toggle('active',a);
-    if(a) c.scrollIntoView({block:'nearest'});
-  });
 }
 
 /* ---------- เต็มจอ (ทั้ง modal ไม่ใช่แค่ตัววิดีโอ) ---------- */
@@ -411,7 +389,6 @@ accountGrid.addEventListener('click', event=>{
   if(card) openAccount(card.dataset.source);
 });
 backToAccountsButton.onclick = ()=>showAccounts(selectedSource);
-playlistSearchEl.oninput = renderPlaylist;
 qualityEl.onchange = applyQualityMode;
 favoritesButton.onclick=()=>{favoriteOnly=!favoriteOnly; currentIdx=-1; render();};
 $('btnClose').onclick = closeModal;
@@ -420,10 +397,6 @@ $('btnRetry').onclick = retryCurrent;
 $('btnSkip').onclick = nextVideo;
 $('btnOpenVideo').onclick = () => { const current = currentList[currentIdx]; if (current) window.open(current.videoUrl, '_blank', 'noopener'); };
 $('favoriteCurrent').onclick = toggleCurrentFavorite;
-togglePlaylistButton.onclick = () => {
-  const opened = playlist.classList.toggle('mobile-open');
-  togglePlaylistButton.setAttribute('aria-expanded', String(opened));
-};
 
 /* มือถือ: ปัดขึ้น = ถัดไป, ปัดลง = ก่อนหน้า (ไม่นับแถบควบคุมวิดีโอด้านล่าง) */
 let tx=0,ty=0,tOK=false;
