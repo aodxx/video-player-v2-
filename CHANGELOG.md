@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Changed
-- Browser Back on mobile and desktop now closes the active video player; the existing close button and Escape key remain available.
+- Browser Back and Forward navigate between the account list, selected account, and active player; removed the player × and the “เลือกบัญชี” back button. Escape remains available to close the player.
 
 ## [2.12.1] - 2026-11-18
 

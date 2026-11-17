@@ -20,7 +20,7 @@
   #showFavorites.active{border-color:#ffbd4a;color:#ffcf70;background:#382b16}
   #togglePlaylist{display:none}
   #loadMoreWrap{grid-column:1/-1;text-align:center;padding:12px}
-  #accountsView[hidden],#layout[hidden],#videoControls[hidden],#backToAccounts[hidden],#selectedAccountTitle[hidden]{display:none!important}
+  #accountsView[hidden],#layout[hidden],#videoControls[hidden],#selectedAccountTitle[hidden]{display:none!important}
   #videoControls{display:flex;flex:1;min-width:0;gap:10px;flex-wrap:wrap;align-items:center}
   #selectedAccountTitle{font-size:15px;margin:0;white-space:nowrap}
   #accountsView{max-width:1400px;margin:0 auto;padding:24px 16px 40px}
@@ -31,7 +31,7 @@
   .account-card{display:flex;flex-direction:column;width:100%;padding:0;overflow:hidden;text-align:left;
                 border:1px solid #333;border-radius:12px;background:#1c1c1c;color:#eee}
   .account-card:hover{background:#242424;border-color:#555}
-  .account-card:focus-visible,#backToAccounts:focus-visible{outline:3px solid #4ea1ff;outline-offset:2px}
+  .account-card:focus-visible{outline:3px solid #4ea1ff;outline-offset:2px}
   .account-art{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#252525;border-bottom:1px solid #333}
   .account-info{display:grid;gap:5px;padding:12px}
   .account-name{font-size:15px;font-weight:650;overflow-wrap:anywhere}
@@ -159,7 +159,6 @@
 
 <header id="appHeader">
   <h1 id="appTitle">🎬 Video Player</h1>
-  <button id="backToAccounts" type="button" hidden>← เลือกบัญชี</button>
   <h2 id="selectedAccountTitle" tabindex="-1" hidden></h2>
   <div id="videoControls" hidden>
     <input id="search" type="search" placeholder="ค้นหาในบัญชี..." aria-label="ค้นหาในบัญชี" style="flex:1;min-width:150px">
@@ -201,7 +200,6 @@
     <div id="bufferStatus" role="status" aria-live="polite"></div>
     <div id="ui">
       <div class="topbar">
-        <button id="btnClose">✕ ปิด</button>
         <span id="pos">- / -</span>
         <button id="btnFS">⛶ เต็มจอ</button>
       </div>

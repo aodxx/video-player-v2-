@@ -15,7 +15,6 @@ const grid=$('grid'), plList=$('plList'), countEl=$('count');
 const searchEl=$('search'), sortEl=$('sort');
 const accountsView=$('accountsView'), accountGrid=$('accountGrid'), layout=$('layout');
 const appTitle=$('appTitle'), selectedAccountTitle=$('selectedAccountTitle'), videoControls=$('videoControls');
-const backToAccountsButton=$('backToAccounts');
 const favoritesButton=$('showFavorites');
 const playlist=$('playlist'), togglePlaylistButton=$('togglePlaylist'), playlistSearchEl=$('playlistSearch');
 const modal=$('modal'), stage=$('stage'), ui=$('ui'), player=$('player');
@@ -23,8 +22,7 @@ const playerHistory = createPlayerHistoryController({
   historyApi: window.history,
   eventTarget: window,
   currentUrl: () => window.location.href,
-  isPlayerOpen: () => modal.classList.contains('active'),
-  closePlayer: () => closeModal(true)
+  onNavigate: handleHistoryNavigation
 });
 const detailsEl=$('details'), posEl=$('pos'), btnPrev=$('btnPrev'), btnNext=$('btnNext');
 const sourceDetailsEl=$('sourceDetails');
@@ -177,9 +175,10 @@ function renderAccounts(){
   }).join('') : '<div class="loading">ยังไม่มีข้อมูลวิดีโอ</div>';
 }
 
-function openAccount(source){
+function openAccount(source,fromHistory=false){
   const account = summarizeSources(DATA).find(item=>item.source===source);
   if(!account) return;
+  if(!fromHistory) playerHistory.openAccount(account.source);
   selectedSource = account.source;
   currentIdx = -1;
   favoriteOnly = false;
@@ -192,7 +191,6 @@ function openAccount(source){
   selectedAccountTitle.hidden = false;
   selectedAccountTitle.textContent = account.accountLabel;
   videoControls.hidden = false;
-  backToAccountsButton.hidden = false;
   render();
   selectedAccountTitle.focus();
 }
@@ -206,12 +204,40 @@ function showAccounts(focusSource = selectedSource){
   appTitle.hidden = false;
   selectedAccountTitle.hidden = true;
   videoControls.hidden = true;
-  backToAccountsButton.hidden = true;
   renderAccounts();
   if(focusSource){
     const card = [...accountGrid.querySelectorAll('.account-card')].find(item=>item.dataset.source===focusSource);
     card?.focus();
   }
+}
+
+function handleHistoryNavigation(state){
+  if(state?.view==='player' && state.source && state.videoUrl){
+    if(selectedSource!==state.source) openAccount(state.source,true);
+    if(state.viewState){
+      searchEl.value=typeof state.viewState.search==='string'?state.viewState.search:'';
+      sortEl.value=['date','views','duration'].includes(state.viewState.sort)?state.viewState.sort:'date';
+      favoriteOnly=Boolean(state.viewState.favoriteOnly);
+      render();
+    }
+    let index=currentList.findIndex(video=>video.videoUrl===state.videoUrl);
+    if(index<0){
+      searchEl.value='';
+      favoriteOnly=false;
+      render();
+      index=currentList.findIndex(video=>video.videoUrl===state.videoUrl);
+    }
+    if(index>=0) openAt(index,false,true);
+    else if(modal.classList.contains('active')) closeModal(true);
+    return;
+  }
+  if(state?.view==='account' && state.source){
+    if(modal.classList.contains('active')) closeModal(true);
+    if(selectedSource!==state.source) openAccount(state.source,true);
+    return;
+  }
+  if(modal.classList.contains('active')) closeModal(true);
+  if(selectedSource) showAccounts(selectedSource);
 }
 
 function render(){
@@ -300,9 +326,13 @@ player.addEventListener('play',showUI);
 player.addEventListener('pause',showUI);
 
 /* ---------- Player ---------- */
-function openAt(i,fromUser){
+function openAt(i,fromUser,fromHistory=false){
   if(i<0||i>=currentList.length) return;
-  if(!modal.classList.contains('active')) playerHistory.open();
+  const viewState = { search: searchEl.value, sort: sortEl.value, favoriteOnly };
+  if(!fromHistory){
+    if(modal.classList.contains('active')) playerHistory.updatePlayer(selectedSource,currentList[i].videoUrl,viewState);
+    else playerHistory.openPlayer(selectedSource,currentList[i].videoUrl,viewState);
+  }
   if(fromUser && autofsEl.checked && !fsEl()) enterFS();  // ต้องเรียกตอนผู้ใช้กดเท่านั้น
   currentIdx = i;
   const d = currentList[i];
@@ -377,13 +407,15 @@ function nextVideo(){ if(currentIdx<currentList.length-1) openAt(currentIdx+1); 
 function prevVideo(){ if(currentIdx>0) openAt(currentIdx-1); }
 
 function closeModal(fromHistory=false){
+  ++openToken;
+  clearBufferStatus();
   exitFS();
   modal.classList.remove('active');
   player.pause(); player.removeAttribute('src'); player.load();
   errorBox.classList.remove('active');
   currentIdx = -1;
   render();
-  if(!fromHistory) playerHistory.close();
+  if(!fromHistory) playerHistory.back();
 }
 
 player.addEventListener('loadstart',()=>{ showBufferStatus(); scheduleBufferRecovery(); });
@@ -420,11 +452,9 @@ accountGrid.addEventListener('click', event=>{
   const card = event.target.closest('.account-card');
   if(card) openAccount(card.dataset.source);
 });
-backToAccountsButton.onclick = ()=>showAccounts(selectedSource);
 playlistSearchEl.oninput = renderPlaylist;
 qualityEl.onchange = applyQualityMode;
 favoritesButton.onclick=()=>{favoriteOnly=!favoriteOnly; currentIdx=-1; render();};
-$('btnClose').onclick = closeModal;
 btnFS.onclick = toggleFS;
 $('btnRetry').onclick = retryCurrent;
 $('btnSkip').onclick = nextVideo;
