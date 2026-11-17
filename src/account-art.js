@@ -12,7 +12,8 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   Dedprajamsoy: 'src/assets/accounts/dedprajamsoy.jpg',
   'Ana Lopez': 'src/assets/accounts/ana-lopez.webp',
   'Jean Lajemo': 'src/assets/accounts/jean-lajemo.webp',
-  'ลับเด็ด 18+': 'src/assets/accounts/joupze.jpg'
+  'ลับเด็ด 18+': 'src/assets/accounts/joupze.jpg',
+  'หลุดจากเทพ 🔱🔞': 'src/assets/accounts/hludcaktheph.webp'
 });
 
 export function getAccountArtwork(source) {

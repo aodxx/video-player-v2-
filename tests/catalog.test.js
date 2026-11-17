@@ -167,6 +167,13 @@ test('parses the joupze source code and label for account clips', () => {
   assert.equal(video?.durationSeconds, 56);
   assert.equal(video?.views, 9498);
 });
+test('parses the Hludcaktheph source code and account label', () => {
+  const [video] = parseRawData('HL|2026-11-16 13:39|https://x.com/Hludcaktheph/status/2122323720815730822|https://video.twimg.com/amplify_video/2107302819200180224/vid/avc1/540x960/RBCk0PG-7j6kz2Ng.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2107302819200180224/img/U2KM3MbNuB45MwLh.jpg|44|23926|test clip');
+  assert.equal(video?.source, 'หลุดจากเทพ 🔱🔞');
+  assert.equal(video?.sourceLabel, '@Hludcaktheph');
+  assert.equal(video?.durationSeconds, 44);
+  assert.equal(video?.views, 23926);
+});
 test('parses the Dedprajamsoy source code and label for account clips', () => {
   const [video] = parseRawData('DS|2026-11-16 16:52|https://x.com/dedprajamsoy/status/2122372173998551366|https://video.twimg.com/amplify_video/2122372075952480258/vid/avc1/400x720/c9TaEi7TLifGu3Ci.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2122372075952480258/img/f3vLcdlKJnWV5az3.jpg|410|10897|');
   assert.deepEqual(video, {
