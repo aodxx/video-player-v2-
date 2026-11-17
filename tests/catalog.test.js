@@ -160,6 +160,13 @@ test('parses the Jean Lajemo source code and label for account clips', () => {
   assert.equal(video?.durationSeconds, 56);
   assert.equal(video?.views, 9498);
 });
+test('parses the joupze source code and label for account clips', () => {
+  const [video] = parseRawData('JP|2026-11-16 22:36|https://x.com/joupze/status/2122470000000000000|https://video.twimg.com/amplify_video/2122470000000000000/vid/avc1/720x1280/test.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2122470000000000000/img/test.jpg|56|9498|sample clip');
+  assert.equal(video?.source, 'ลับเด็ด 18+');
+  assert.equal(video?.sourceLabel, '@joupze');
+  assert.equal(video?.durationSeconds, 56);
+  assert.equal(video?.views, 9498);
+});
 test('parses the Dedprajamsoy source code and label for account clips', () => {
   const [video] = parseRawData('DS|2026-11-16 16:52|https://x.com/dedprajamsoy/status/2122372173998551366|https://video.twimg.com/amplify_video/2122372075952480258/vid/avc1/400x720/c9TaEi7TLifGu3Ci.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2122372075952480258/img/f3vLcdlKJnWV5az3.jpg|410|10897|');
   assert.deepEqual(video, {

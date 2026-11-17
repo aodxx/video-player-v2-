@@ -11,7 +11,8 @@ const SOURCES = Object.freeze({
   RP: ['Reno16Promax1', '@reno16promax1'],
   DS: ['Dedprajamsoy', '@dedprajamsoy'],
   AL: ['Ana Lopez', '@AnaLopez1210921'],
-  JL: ['Jean Lajemo', '@JeanLajemo2']
+  JL: ['Jean Lajemo', '@JeanLajemo2'],
+  JP: ['ลับเด็ด 18+', '@joupze']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -20,7 +21,8 @@ const ACCOUNT_LABELS = Object.freeze({
   Reno16Promax1: '@reno16promax1',
   Dedprajamsoy: '@dedprajamsoy',
   'Ana Lopez': '@AnaLopez1210921',
-  'Jean Lajemo': '@JeanLajemo2'
+  'Jean Lajemo': '@JeanLajemo2',
+  'ลับเด็ด 18+': '@joupze'
 });
 
 function isHttpsHost(value, host) {
