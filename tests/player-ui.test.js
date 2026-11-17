@@ -23,3 +23,12 @@ test('less-used controls and clip details are inside a closed More panel', () =>
   assert.match(app, /เปิดโพสต์ต้นทาง ↗/, 'source post link stays available in clip details');
   assert.match(app, /sourceDetailsEl\.textContent = d\.sourceLabel/);
 });
+
+test('automatic fullscreen is opt-in so Android Back closes the player predictably', () => {
+  const control = html.match(/<input\b[^>]*id="autofs"[^>]*>/);
+  assert.ok(control, 'automatic fullscreen control must remain available');
+  assert.doesNotMatch(control[0], /\bchecked\b/, 'automatic fullscreen should be off by default');
+  const openAt = app.slice(app.indexOf('function openAt('), app.indexOf('function updateDetails('));
+  assert.ok(openAt.indexOf("modal.classList.add('active')") < openAt.indexOf('enterFS()'),
+    'show the player before requesting fullscreen');
+});
