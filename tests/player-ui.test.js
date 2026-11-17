@@ -32,3 +32,15 @@ test('automatic fullscreen is opt-in so Android Back closes the player predictab
   assert.ok(openAt.indexOf("modal.classList.add('active')") < openAt.indexOf('enterFS()'),
     'show the player before requesting fullscreen');
 });
+
+test('opens the original source before resolving HQ and preserves playback when upgrading', () => {
+  const openAt = app.slice(app.indexOf('function openAt('), app.indexOf('function updateDetails('));
+  assert.ok(openAt.indexOf('startPlay(d.videoUrl);') < openAt.indexOf('withTimeout(resolveHQ(d),2500)'),
+    'the original source should start before the HQ lookup');
+  assert.match(openAt, /const position=Number\.isFinite\(player\.currentTime\)/,
+    'capture the current playback position before changing sources');
+  assert.match(openAt, /const shouldResume=!player\.paused&&!player\.ended/,
+    'preserve whether playback was active before changing sources');
+  assert.match(openAt, /reloadPlayerAt\(h\.url,position,token,shouldResume\)/,
+    'restore playback state after the HQ source is ready');
+});

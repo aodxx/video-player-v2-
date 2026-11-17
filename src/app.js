@@ -141,6 +141,7 @@ function scheduleBufferRecovery(){
 }
 function pixels(u){const m=/\/(\d+)x(\d+)\//.exec(u||'');return m?+m[1]*+m[2]:0;}
 function resolutionLabel(u){const m=/\/(\d+)x(\d+)\//.exec(u||'');return m?m[2]+'p':'';}
+function shouldUseResolvedHQ(mode,h,originalUrl){return !!(h&&h.url)&&(mode==='max'||pixels(h.url)>pixels(originalUrl));}
 
 /* ---------- รายการ / แสดงผล ---------- */
 function buildList(){
@@ -352,13 +353,18 @@ function openAt(i,fromUser,fromHistory=false){
     const nx=currentList[i+1]; if(nx && qualityEl.value!=='original') resolveHQ(nx);   // โหลดล่วงหน้าคลิปถัดไป
   };
   const mode = qualityEl.value;
+  startPlay(d.videoUrl);
   if(mode!=='original' && HQ_BASE){
     withTimeout(resolveHQ(d),2500).then(h=>{
-      if(token!==openToken) return;
-      if(h && (mode==='max' || pixels(h.url) > pixels(d.videoUrl))) startPlay(h.url,true,h.height);
-      else startPlay(d.videoUrl);
+      if(token!==openToken || !shouldUseResolvedHQ(mode,h,d.videoUrl)) return;
+      const position=Number.isFinite(player.currentTime)?player.currentTime:0;
+      const shouldResume=!player.paused&&!player.ended;
+      d._usingHQ=true; d._hqUrl=h.url; d._res=h.height?h.height+'p':resolutionLabel(h.url);
+      updateDetails(d);
+      showBufferStatus('กำลังเปลี่ยนไปใช้ความละเอียดสูงสุด…');
+      reloadPlayerAt(h.url,position,token,shouldResume);
     });
-  } else startPlay(d.videoUrl);
+  }
 
   posEl.textContent = `${i+1} / ${currentList.length}`;
   btnPrev.disabled = (i<=0);
