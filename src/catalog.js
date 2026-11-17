@@ -14,7 +14,8 @@ const SOURCES = Object.freeze({
   JL: ['Jean Lajemo', '@JeanLajemo2'],
   JP: ['ลับเด็ด 18+', '@joupze'],
   HL: ['หลุดจากเทพ 🔱🔞', '@Hludcaktheph'],
-  LX: ['Lxrvip1', '@lxrvip1']
+  LX: ['Lxrvip1', '@lxrvip1'],
+  MA: ['Mariana20845787', '@mariana20845787']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
