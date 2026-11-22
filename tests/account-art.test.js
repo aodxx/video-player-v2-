@@ -31,12 +31,13 @@ const expectedArtwork = {
   Goodwork56: 'src/assets/accounts/goodwork56.jpg',
   Thephphraceaca: 'src/assets/accounts/thephphraceaca.jpg',
   Mnnnnnnnnnn20: 'src/assets/accounts/mnnnnnnnnnn20.jpg',
-  'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg'
+  'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg',
+  Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg'
 };
 
 test('maps configured account artwork to distinct local assets', async () => {
   assert.deepEqual(ACCOUNT_ARTWORK, expectedArtwork);
-  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 27);
+  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 28);
   for (const [source, path] of Object.entries(expectedArtwork)) {
     assert.equal(getAccountArtwork(source), path);
     await access(new URL(`../${path}`, import.meta.url));

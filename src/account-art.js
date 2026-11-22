@@ -25,7 +25,8 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   Goodwork56: 'src/assets/accounts/goodwork56.jpg',
   Thephphraceaca: 'src/assets/accounts/thephphraceaca.jpg',
   Mnnnnnnnnnn20: 'src/assets/accounts/mnnnnnnnnnn20.jpg',
-  'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg'
+  'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg',
+  Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg'
 });
 
 export const ACCOUNT_AVATARS = Object.freeze({
