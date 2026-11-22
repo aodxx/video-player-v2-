@@ -28,7 +28,8 @@ const SOURCES = Object.freeze({
   MN: ['Mnnnnnnnnnn20', '@Mnnnnnnnnnn20'],
   YM: ['Yes‼️ไม่เลือกหน้า', '@yes_mailueK'],
   GM: ['Gamemint4210', '@Gamemint4210'],
-  XI: ['X Import', 'X Import']
+  XI: ['X Import', 'X Import'],
+  VH: ['Vhcosmetic', '@vhcosmetic']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -52,7 +53,8 @@ const ACCOUNT_LABELS = Object.freeze({
   Thephphraceaca: '@Thephphraceaca',
   Mnnnnnnnnnn20: '@Mnnnnnnnnnn20',
   'Yes‼️ไม่เลือกหน้า': '@yes_mailueK',
-  'X Import': 'Imported X videos'
+  'X Import': 'Imported X videos',
+  Vhcosmetic: '@vhcosmetic'
 });
 
 function isHttpsHost(value, host) {

@@ -284,6 +284,15 @@ test('parses the Gamemint4210 source code and account label with blank text', ()
   assert.equal(catalog.summarizeSources([video])[0]?.accountLabel, '@Gamemint4210');
 });
 
+test('parses the vhcosmetic source code, account label, and pipe-delimited timeline text', () => {
+  const [video] = parseRawData('VH|2026-11-22 20:07|https://x.com/vhcosmetic/status/2124595726168756588|https://video.twimg.com/amplify_video/2124094393523306496/vid/avc1/720x1280/bleZbicVZTTHsJYk.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2124094393523306496/img/jM4Qu5U3EuIfvkYg.jpg|324|11803|timeline clip|with a pipe');
+  assert.equal(video?.source, 'Vhcosmetic');
+  assert.equal(video?.sourceLabel, '@vhcosmetic');
+  assert.equal(video?.views, 11803);
+  assert.equal(video?.text, 'timeline clip|with a pipe');
+  assert.equal(catalog.summarizeSources([video])[0]?.accountLabel, '@vhcosmetic');
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
