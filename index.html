@@ -38,6 +38,9 @@
   .account-card:hover{background:#242424;border-color:#555}
   .account-card:focus-visible{outline:3px solid #4ea1ff;outline-offset:2px}
   .account-art{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#252525;border-bottom:1px solid #333}
+  .account-art-frame{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;background:#252525;border-bottom:1px solid #333}
+  .account-art-frame .account-art{height:100%;aspect-ratio:auto;border:0}
+  .account-avatar{position:absolute;left:12px;bottom:12px;width:58px;height:58px;object-fit:cover;border:2px solid #fff;border-radius:50%;background:#111;box-shadow:0 2px 8px #0009}
   .account-info{display:grid;gap:5px;padding:12px}
   .account-name{font-size:15px;font-weight:650;overflow-wrap:anywhere}
   .account-meta{font-size:12px;color:#aaa}
@@ -74,6 +77,8 @@
   .badge.src-gn{background:#443b2e;color:#f1d39a}
   .badge.src-al{background:#3b3b4a;color:#c9c9ff}
   .badge.src-lx{background:#2f4544;color:#a7e1d8}
+  .badge.src-sr{background:#45374c;color:#e0c8ff}
+  .badge.src-am{background:#4a3930;color:#ffd1b1}
   .card.playing{outline:3px solid #4ea1ff}
 
   @media(max-width:600px){
@@ -89,6 +94,9 @@
     #accountsView{padding:18px 12px 28px}
     .account-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .account-art{aspect-ratio:1/1}
+    .account-art-frame{aspect-ratio:1/1}
+    .account-art-frame.has-avatar{aspect-ratio:16/9}
+    .account-avatar{left:8px;bottom:8px;width:48px;height:48px}
     .account-info{padding:10px;gap:4px}
     .account-name{font-size:14px}
     .account-meta{font-size:11px}

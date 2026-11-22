@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { access } from 'node:fs/promises';
-import { ACCOUNT_ARTWORK, getAccountArtwork } from '../src/account-art.js';
+import * as accountArt from '../src/account-art.js';
+const { ACCOUNT_ARTWORK, getAccountArtwork } = accountArt;
 
 const expectedArtwork = {
   SoMay: 'src/assets/accounts/so-may.webp',
@@ -23,17 +24,36 @@ const expectedArtwork = {
   Kaled46164207: 'src/assets/accounts/kaled46164207.webp',
   Charles74943343: 'src/assets/accounts/charles74943343.webp',
   porpine3344: 'src/assets/accounts/porpine3344.webp',
+  Songruhee23: 'src/assets/accounts/songruhee23-cover.webp',
+  AmySchkade: 'src/assets/accounts/amyschkade-avatar.webp',
   GalaGGyp: 'src/assets/accounts/galaggyp.jpg',
   Yesyesn2m7: 'src/assets/accounts/yesyesn2m7.jpg'
 };
 
 test('maps every video account to a distinct local artwork asset', async () => {
   assert.deepEqual(ACCOUNT_ARTWORK, expectedArtwork);
-  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 21);
+  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 23);
   for (const [source, path] of Object.entries(expectedArtwork)) {
     assert.equal(getAccountArtwork(source), path);
     await access(new URL(`../${path}`, import.meta.url));
   }
+});
+
+test('maps the two profile avatars and omits a separate avatar overlay when the avatar is the fallback artwork', async () => {
+  assert.equal(typeof accountArt.getAccountAvatar, 'function');
+  if (typeof accountArt.getAccountAvatar !== 'function') return;
+
+  const expectedAvatars = {
+    Songruhee23: 'src/assets/accounts/songruhee23-avatar.webp',
+    AmySchkade: 'src/assets/accounts/amyschkade-avatar.webp'
+  };
+  assert.deepEqual(accountArt.ACCOUNT_AVATARS, expectedAvatars);
+  for (const [source, path] of Object.entries(expectedAvatars)) {
+    assert.equal(accountArt.getAccountAvatar(source), path);
+    await access(new URL(`../${path}`, import.meta.url));
+  }
+  assert.notEqual(getAccountArtwork('Songruhee23'), accountArt.getAccountAvatar('Songruhee23'));
+  assert.equal(getAccountArtwork('AmySchkade'), accountArt.getAccountAvatar('AmySchkade'));
 });
 
 test('returns null for sources without account artwork', () => {

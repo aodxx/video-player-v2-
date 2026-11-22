@@ -226,6 +226,23 @@ test('parses the mariana20845787 source code and account label', () => {
   assert.equal(video?.durationSeconds, 596);
   assert.equal(video?.views, 15698);
 });
+
+test('parses and summarizes the Songruhee23 and AmySchkade sources', () => {
+  const videos = parseRawData([
+    'SR|2026-11-21|https://x.com/Songruhee23/status/987654321|https://video.twimg.com/test-songruhee.mp4||30|120|',
+    'AM|2026-11-20|https://x.com/AmySchkade/status/987654322|https://video.twimg.com/test-amyschkade.mp4||45|240|'
+  ].join('\n'));
+
+  assert.deepEqual(videos.map(({ source, sourceLabel }) => ({ source, sourceLabel })), [
+    { source: 'Songruhee23', sourceLabel: '@Songruhee23' },
+    { source: 'AmySchkade', sourceLabel: '@AmySchkade' }
+  ]);
+  assert.deepEqual(catalog.summarizeSources(videos).map(({ source, accountLabel, count }) => ({ source, accountLabel, count })), [
+    { source: 'Songruhee23', accountLabel: '@Songruhee23', count: 1 },
+    { source: 'AmySchkade', accountLabel: '@AmySchkade', count: 1 }
+  ]);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
