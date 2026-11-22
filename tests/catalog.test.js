@@ -267,6 +267,14 @@ test('parses the Mnnnnnnnnnn20 source code and account label', () => {
   assert.equal(video?.views, 19852);
 });
 
+test('parses the yes_mailueK source code and account label', () => {
+  const [video] = parseRawData('YM|2026-11-22 18:43|https://x.com/yes_mailueK/status/2124574405963710526|https://video.twimg.com/amplify_video/2124574331414175744/vid/avc1/438x782/0C8twZDkDP5PxLN0.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2124574331414175744/img/vxnzjpwa1nT-9sxr.jpg|93|1253|sample clip');
+  assert.equal(video?.source, 'Yes‼️ไม่เลือกหน้า');
+  assert.equal(video?.sourceLabel, '@yes_mailueK');
+  assert.equal(video?.durationSeconds, 93);
+  assert.equal(video?.views, 1253);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
