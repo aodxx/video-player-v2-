@@ -275,6 +275,15 @@ test('parses the yes_mailueK source code and account label', () => {
   assert.equal(video?.views, 1253);
 });
 
+test('parses the Gamemint4210 source code and account label with blank text', () => {
+  const [video] = parseRawData('GM|2026-11-22 14:58|https://x.com/Gamemint4210/status/2124517760973836756|https://video.twimg.com/amplify_video/2124517685581275136/vid/avc1/960x530/z-isY-8ydFNn1s1G.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2124517685581275136/img/avKwcNOXpUr_xyHP.jpg|120|1085|');
+  assert.equal(video?.source, 'Gamemint4210');
+  assert.equal(video?.sourceLabel, '@Gamemint4210');
+  assert.equal(video?.postedAt, '2026-11-22 14:58');
+  assert.equal(video?.text, '');
+  assert.equal(catalog.summarizeSources([video])[0]?.accountLabel, '@Gamemint4210');
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',

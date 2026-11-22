@@ -27,6 +27,7 @@ const SOURCES = Object.freeze({
   TP: ['Thephphraceaca', '@Thephphraceaca'],
   MN: ['Mnnnnnnnnnn20', '@Mnnnnnnnnnn20'],
   YM: ['Yes‼️ไม่เลือกหน้า', '@yes_mailueK'],
+  GM: ['Gamemint4210', '@Gamemint4210'],
   XI: ['X Import', 'X Import']
 });
 
@@ -47,6 +48,7 @@ const ACCOUNT_LABELS = Object.freeze({
   GalaGGyp: '@GalaGGyp',
   Yesyesn2m7: '@Yesyesn2m7',
   Goodwork56: '@goodwork56',
+  Gamemint4210: '@Gamemint4210',
   Thephphraceaca: '@Thephphraceaca',
   Mnnnnnnnnnn20: '@Mnnnnnnnnnn20',
   'Yes‼️ไม่เลือกหน้า': '@yes_mailueK',
