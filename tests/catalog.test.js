@@ -243,6 +243,14 @@ test('parses and summarizes the Songruhee23 and AmySchkade sources', () => {
   ]);
 });
 
+test('parses the Goodwork56 source code and account label', () => {
+  const [video] = parseRawData('GW|2026-11-22 09:34|https://x.com/goodwork56/status/2124436384358519045|https://video.twimg.com/amplify_video/2124435977276178432/vid/avc1/862x1920/hyR4EqmFKzXqkHdn.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2124435977276178432/img/FGHEbm-AiUlETJm-.jpg|432|6053|sample clip');
+  assert.equal(video?.source, 'Goodwork56');
+  assert.equal(video?.sourceLabel, '@goodwork56');
+  assert.equal(video?.durationSeconds, 432);
+  assert.equal(video?.views, 6053);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',

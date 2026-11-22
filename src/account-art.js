@@ -21,7 +21,8 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   Songruhee23: 'src/assets/accounts/songruhee23-cover.webp',
   AmySchkade: 'src/assets/accounts/amyschkade-avatar.webp',
   GalaGGyp: 'src/assets/accounts/galaggyp.jpg',
-  Yesyesn2m7: 'src/assets/accounts/yesyesn2m7.jpg'
+  Yesyesn2m7: 'src/assets/accounts/yesyesn2m7.jpg',
+  Goodwork56: 'src/assets/accounts/goodwork56.jpg'
 });
 
 export const ACCOUNT_AVATARS = Object.freeze({
