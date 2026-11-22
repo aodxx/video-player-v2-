@@ -22,7 +22,8 @@ const SOURCES = Object.freeze({
   GG: ['GalaGGyp', '@GalaGGyp'],
   YY: ['Yesyesn2m7', '@Yesyesn2m7'],
   SR: ['Songruhee23', '@Songruhee23'],
-  AM: ['AmySchkade', '@AmySchkade']
+  AM: ['AmySchkade', '@AmySchkade'],
+  XI: ['X Import', 'X Import']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -40,7 +41,8 @@ const ACCOUNT_LABELS = Object.freeze({
   Charles74943343: '@Charles74943343',
   porpine3344: '@porpine3344',
   GalaGGyp: '@GalaGGyp',
-  Yesyesn2m7: '@Yesyesn2m7'
+  Yesyesn2m7: '@Yesyesn2m7',
+  'X Import': 'Imported X videos'
 });
 
 function isHttpsHost(value, host) {
