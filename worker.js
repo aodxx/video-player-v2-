@@ -39,7 +39,7 @@ async function findHQ(id, mediaId) {
   if (!lists.length) { try { lists = await viaFx(id); } catch { /* upstream unavailable */ } }
   if (!lists.length) return null;
   const variants = (lists.find(list => mediaId && list.some(item => item.url.includes(mediaId))) || lists[0])
-    .slice().sort((a, b) => (b.bitrate - a.bitrate) || (resOf(b.url) - resOf(a.url)));
+    .slice().sort((a, b) => (resOf(b.url) - resOf(a.url)) || (b.bitrate - a.bitrate));
   const best = variants[0];
   const match = /\/(\d+)x(\d+)\//.exec(best.url);
   return { url: best.url, width: match ? +match[1] : 0, height: match ? +match[2] : 0 };

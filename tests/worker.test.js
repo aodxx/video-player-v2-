@@ -55,3 +55,26 @@ test('stops redirect loops after a bounded number of hops', async () => {
   });
   assert.ok(calls <= 4);
 });
+
+test('HQ resolver prefers the highest pixel resolution before bitrate', async () => {
+  await withFetch(async (url) => {
+    const target = String(url);
+    if (target.includes('cdn.syndication.twimg.com')) {
+      return Response.json({
+        mediaDetails: [{ video_info: { variants: [
+          { content_type: 'video/mp4', bitrate: 2500000, url: 'https://video.twimg.com/ext_tw_video/12345/vid/avc1/1280x720/high-bitrate.mp4' },
+          { content_type: 'video/mp4', bitrate: 1800000, url: 'https://video.twimg.com/ext_tw_video/12345/vid/avc1/1920x1080/high-resolution.mp4' },
+        ] } }],
+      });
+    }
+    throw new Error(`unexpected fetch: ${target}`);
+  }, async () => {
+    const response = await worker.fetch(request('/?hq=1234567890123456789&m=12345'));
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), {
+      url: 'https://video.twimg.com/ext_tw_video/12345/vid/avc1/1920x1080/high-resolution.mp4',
+      width: 1920,
+      height: 1080,
+    });
+  });
+});
