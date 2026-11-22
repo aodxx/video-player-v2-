@@ -25,6 +25,7 @@ const SOURCES = Object.freeze({
   AM: ['AmySchkade', '@AmySchkade'],
   GW: ['Goodwork56', '@goodwork56'],
   TP: ['Thephphraceaca', '@Thephphraceaca'],
+  MN: ['Mnnnnnnnnnn20', '@Mnnnnnnnnnn20'],
   XI: ['X Import', 'X Import']
 });
 
@@ -46,6 +47,7 @@ const ACCOUNT_LABELS = Object.freeze({
   Yesyesn2m7: '@Yesyesn2m7',
   Goodwork56: '@goodwork56',
   Thephphraceaca: '@Thephphraceaca',
+  Mnnnnnnnnnn20: '@Mnnnnnnnnnn20',
   'X Import': 'Imported X videos'
 });
 
