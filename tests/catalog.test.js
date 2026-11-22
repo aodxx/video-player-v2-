@@ -251,6 +251,14 @@ test('parses the Goodwork56 source code and account label', () => {
   assert.equal(video?.views, 6053);
 });
 
+test('parses Thephphraceaca source code and account label', () => {
+  const [video] = parseRawData('TP|2026-11-22 15:16|https://x.com/Thephphraceaca/status/2124522408866668821|https://video.twimg.com/amplify_video/2117532897246851072/vid/avc1/464x848/6ZUaSTc2lg1d0yPo.mp4?tag=14|https://pbs.twimg.com/amplify_video_thumb/2117532897246851072/img/F-M3_Vhr-NgWz1Hd.jpg|44|11513|RT sample');
+  assert.equal(video?.source, 'Thephphraceaca');
+  assert.equal(video?.sourceLabel, '@Thephphraceaca');
+  assert.equal(video?.durationSeconds, 44);
+  assert.equal(video?.views, 11513);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
