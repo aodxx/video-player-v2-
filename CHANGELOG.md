@@ -2,8 +2,16 @@
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-11-23
+
+### Added
+- Added the @Gamemint4210 source filter and 512 unique video URLs with post links and available catalogue metadata; post text was not collected.
+
 ### Changed
 - Browser Back and Forward navigate between the account list, selected account, and active player; removed the player × and the “เลือกบัญชี” back button. Escape remains available to close the player.
+
+### Notes
+- The scrape returned 710 video media objects; 171 URLs were already catalogued and 27 duplicates occurred within the batch, leaving 512 new URLs. No profile artwork was imported.
 
 ## [2.12.1] - 2026-11-18
 

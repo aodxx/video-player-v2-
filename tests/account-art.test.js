@@ -34,7 +34,7 @@ const expectedArtwork = {
   'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg'
 };
 
-test('maps every video account to a distinct local artwork asset', async () => {
+test('maps configured account artwork to distinct local assets', async () => {
   assert.deepEqual(ACCOUNT_ARTWORK, expectedArtwork);
   assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 27);
   for (const [source, path] of Object.entries(expectedArtwork)) {
@@ -61,6 +61,7 @@ test('maps the two profile avatars and omits a separate avatar overlay when the 
 });
 
 test('returns null for sources without account artwork', () => {
+  assert.equal(getAccountArtwork('Gamemint4210'), null);
   assert.equal(getAccountArtwork('unknown-account'), null);
   assert.equal(getAccountArtwork('__proto__'), null);
   assert.equal(getAccountArtwork('constructor'), null);
