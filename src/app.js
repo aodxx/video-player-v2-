@@ -1,5 +1,5 @@
 import { filterPlaylistItems, filterVideos, parseRawData, summarizeSources } from './catalog.js';
-import { getAccountArtwork } from './account-art.js';
+import { getAccountArtwork, getAccountAvatar } from './account-art.js';
 import { countFavoritesForSource, isFavoriteForSource, loadFavoritesBySource, serializeFavoritesBySource, toggleFavoriteForSource } from './favorites.js';
 import { createPlayerHistoryController } from './player-history.js';
 
@@ -162,8 +162,13 @@ function renderAccounts(){
   accountGrid.innerHTML = summaries.length ? summaries.map(account=>{
     const favoriteCount = countFavoritesForSource(favoritesBySource, account.source);
     const artwork = getAccountArtwork(account.source);
+    const avatar = getAccountAvatar(account.source);
+    const showAvatar = Boolean(artwork && avatar && avatar !== artwork);
     const art = artwork
-      ? `<img class="account-art" src="${artwork}" alt="" aria-hidden="true" loading="lazy" decoding="async">`
+      ? `<span class="account-art-frame${showAvatar ? ' has-avatar' : ''}">
+          <img class="account-art" src="${artwork}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          ${showAvatar ? `<img class="account-avatar" src="${avatar}" alt="" aria-hidden="true" loading="lazy" decoding="async">` : ''}
+        </span>`
       : '<span class="account-art" aria-hidden="true"></span>';
     return `<button class="account-card" type="button" data-source="${esc(account.source)}">
       ${art}
@@ -254,7 +259,7 @@ function render(){
     const thumb = d.thumbnailUrl
       ? `<img src="${d.thumbnailUrl}" loading="lazy" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
       : '🎬';
-    const cls = ({ SoMay:'src-so', Rewaida:'src-rw', 'Rabbit Rayong':'src-cx', Subhash:'src-su', Lietongheng:'src-lt', NNNKII88:'src-nk', Ginan:'src-gn', 'Ana Lopez':'src-al', Lxrvip1:'src-lx' })[d.source] || '';
+    const cls = ({ SoMay:'src-so', Rewaida:'src-rw', 'Rabbit Rayong':'src-cx', Subhash:'src-su', Lietongheng:'src-lt', NNNKII88:'src-nk', Ginan:'src-gn', 'Ana Lopez':'src-al', Lxrvip1:'src-lx', Songruhee23:'src-sr', AmySchkade:'src-am' })[d.source] || '';
     return `<div class="card ${i===currentIdx?'playing':''}" data-i="${i}">
       <div class="thumb">${thumb}<button class="favorite-btn ${isFavorite(d)?'is-favorite':''}" type="button" aria-label="${isFavorite(d)?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'}" aria-pressed="${isFavorite(d)}">${isFavorite(d)?'★':'☆'}</button></div>
       <div class="info">

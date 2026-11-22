@@ -20,7 +20,9 @@ const SOURCES = Object.freeze({
   CH: ['Charles74943343', '@Charles74943343'],
   PP: ['porpine3344', '@porpine3344'],
   GG: ['GalaGGyp', '@GalaGGyp'],
-  YY: ['Yesyesn2m7', '@Yesyesn2m7']
+  YY: ['Yesyesn2m7', '@Yesyesn2m7'],
+  SR: ['Songruhee23', '@Songruhee23'],
+  AM: ['AmySchkade', '@AmySchkade']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
