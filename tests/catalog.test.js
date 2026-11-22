@@ -259,6 +259,14 @@ test('parses Thephphraceaca source code and account label', () => {
   assert.equal(video?.views, 11513);
 });
 
+test('parses the Mnnnnnnnnnn20 source code and account label', () => {
+  const [video] = parseRawData('MN|2026-11-22 16:07|https://x.com/Mnnnnnnnnnn20/status/2124535163732586696|https://video.twimg.com/amplify_video/2124191606249295872/vid/avc1/540x960/LjrUc8c2g6hmIWKP.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2124191606249295872/img/fOWhVmNDOjhlfnY_.jpg|84|19852|sample clip');
+  assert.equal(video?.source, 'Mnnnnnnnnnn20');
+  assert.equal(video?.sourceLabel, '@Mnnnnnnnnnn20');
+  assert.equal(video?.durationSeconds, 84);
+  assert.equal(video?.views, 19852);
+});
+
 test('summarizes each account once with its label and video count', () => {
   const videos = parseRawData([
     'SO|2026-11-06|https://x.com/a/status/123|https://video.twimg.com/a.mp4||23|42|',
