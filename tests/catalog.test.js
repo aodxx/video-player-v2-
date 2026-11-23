@@ -80,6 +80,20 @@ test('duplicate validation keys videos by media URL, not post URL', () => {
   assert.deepEqual(duplicates, ['https://video.twimg.com/a.mp4']);
 });
 
+test('allows duplicate video URLs only for explicitly exempted sources', () => {
+  const raw = [
+    'VH|2026-11-06|https://x.com/vhcosmetic/status/111|https://video.twimg.com/repeated.mp4||23|42|',
+    'VH|2026-11-06|https://x.com/vhcosmetic/status/222|https://video.twimg.com/repeated.mp4||23|42|',
+    'SO|2026-11-06|https://x.com/a/status/333|https://video.twimg.com/checked.mp4||23|42|',
+    'SO|2026-11-06|https://x.com/b/status/444|https://video.twimg.com/checked.mp4||23|42|'
+  ].join('\n');
+  const videos = parseRawData(raw);
+
+  assert.deepEqual(catalog.findDuplicateVideoUrls(videos, { allowDuplicateSources: ['Vhcosmetic'] }), [
+    'https://video.twimg.com/checked.mp4'
+  ]);
+});
+
 test('rejects malformed rows and non-HTTPS media URLs', () => {
   assert.deepEqual(parseRawData([
     'SO|2026-11-06|https://x.com/a/status/12345|http://video.twimg.com/a.mp4||20|30|',

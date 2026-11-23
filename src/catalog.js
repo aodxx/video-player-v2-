@@ -105,10 +105,12 @@ function validPostedAt(value) {
     && Number(minute) < 60;
 }
 
-export function findDuplicateVideoUrls(videos) {
+export function findDuplicateVideoUrls(videos, { allowDuplicateSources = [] } = {}) {
   const seen = new Set();
   const duplicates = new Set();
+  const allowedSources = new Set(allowDuplicateSources);
   for (const video of videos) {
+    if (allowedSources.has(video.source)) continue;
     if (seen.has(video.videoUrl)) duplicates.add(video.videoUrl);
     seen.add(video.videoUrl);
   }

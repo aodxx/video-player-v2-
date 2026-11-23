@@ -53,7 +53,7 @@ npm run check
 
 - รูปแบบแถวอยู่ใน `README.md` และ `data/videos.txt`; อย่าเปลี่ยน schema โดยไม่เพิ่ม migration/compatibility tests
 - เพิ่ม source ใหม่ต้องอัปเดต parser ใน `src/catalog.js`, filter/badge/UI ที่เกี่ยวข้อง และ tests ให้สอดคล้องกัน
-- ตรวจรายการซ้ำด้วย `VIDEO_URL` ไม่ใช่ `POST_URL`; โพสต์หนึ่งรายการอาจมีวิดีโอหลายไฟล์
+- ตรวจรายการซ้ำด้วย `VIDEO_URL` ไม่ใช่ `POST_URL`; โพสต์หนึ่งรายการอาจมีวิดีโอหลายไฟล์ ข้อยกเว้นที่ maintainer อนุมัติสำหรับ source `VH` (`Vhcosmetic`) คือเก็บทุก timeline appearance และไม่ตรวจหรือตัด `VIDEO_URL` ซ้ำ; validator ยังคงตรวจ duplicate สำหรับ source อื่นตามเดิม
 - ยืนยัน URL และ metadata จากแหล่งที่ได้รับอนุญาต ห้ามเดา timestamp, duration, views หรือ URL; เก็บ post link เพื่อให้ตรวจย้อนกลับได้
 - วิดีโอต้องใช้ HTTPS จาก `video.twimg.com`; thumbnail ถ้ามีต้องใช้ HTTPS จาก `pbs.twimg.com`
 
