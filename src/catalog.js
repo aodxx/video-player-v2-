@@ -151,7 +151,7 @@ export function filterVideos(videos, { source = 'all', query = '', favorites = n
   const needle = String(query).trim().toLocaleLowerCase();
   return videos.filter((video) => {
     if (source !== 'all' && video.source !== source) return false;
-    if (favorites && !favorites.has(video.postUrl)) return false;
+    if (favorites && !favorites.has(video.videoUrl) && !favorites.has(video.postUrl)) return false;
     if (!needle) return true;
     return `${video.text} ${video.postedAt}`.toLocaleLowerCase().includes(needle);
   });
