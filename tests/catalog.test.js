@@ -36,6 +36,15 @@ test('parses the LuangKhoNom source code and account label', () => {
   assert.equal(video?.postUrl, 'https://x.com/LuangKhoNom/status/2125244935645605962');
 });
 
+test('parses the fayeol11 source code and account label', () => {
+  const [video] = parseRawData('FY|2026-11-24 15:31|https://x.com/fayeol11/status/2125250908414238965|https://video.twimg.com/amplify_video/2125250738339381249/vid/avc1/394x720/vAc5_qqby1n9Va4P.mp4?tag=14|https://pbs.twimg.com/amplify_video_thumb/2125250738339381249/img/t3ZtHeirqIaxkrFg.jpg|395|5112|sample clip');
+  assert.equal(video?.source, 'fayeol11');
+  assert.equal(video?.sourceLabel, '@fayeol11');
+  assert.equal(video?.postUrl, 'https://x.com/fayeol11/status/2125250908414238965');
+  assert.equal(video?.durationSeconds, 395);
+  assert.equal(video?.views, 5112);
+});
+
 test('parses the Rabbit Rayong source code from imported catalogue rows', () => {
   const [video] = parseRawData('CX|2026-11-11 13:39|https://x.com/CxllmeB64/status/2120511724931719298|https://video.twimg.com/amplify_video/2120510632365854720/vid/avc1/480x270/hcTEFT1RhwLiYY2H.mp4?tag=29||119|23768|');
   assert.equal(video?.source, 'Rabbit Rayong');

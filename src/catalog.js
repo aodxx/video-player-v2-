@@ -32,7 +32,8 @@ const SOURCES = Object.freeze({
   VH: ['Vhcosmetic', '@vhcosmetic'],
   MJ: ['MJN96744', '@MJN96744'],
   JI: ['Jimwhan01', '@Jimwhan01'],
-  LK: ['LuangKhoNom', '@LuangKhoNom']
+  LK: ['LuangKhoNom', '@LuangKhoNom'],
+  FY: ['fayeol11', '@fayeol11']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -60,7 +61,8 @@ const ACCOUNT_LABELS = Object.freeze({
   Vhcosmetic: '@vhcosmetic',
   MJN96744: '@MJN96744',
   Jimwhan01: '@Jimwhan01',
-  LuangKhoNom: '@LuangKhoNom'
+  LuangKhoNom: '@LuangKhoNom',
+  fayeol11: '@fayeol11'
 });
 
 function isHttpsHost(value, host) {
