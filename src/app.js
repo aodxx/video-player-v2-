@@ -2,6 +2,7 @@ import { filterPlaylistItems, filterVideos, parseRawData, summarizeSources } fro
 import { getAccountArtwork, getAccountAvatar } from './account-art.js';
 import { countFavoritesForSource, isFavoriteForSource, loadFavoritesBySource, serializeFavoritesBySource, toggleFavoriteForSource } from './favorites.js';
 import { createPlayerHistoryController } from './player-history.js';
+import { shouldIgnorePlayerShortcut } from './keyboard.js';
 
 /* ถ้าเปิดจาก GitHub Pages แล้ววิดีโอยัง 403 ให้ตั้งค่า เช่น
    const PROXY_PREFIX = 'https://your-worker.workers.dev/?url=';  */
@@ -59,13 +60,13 @@ function syncFavoriteControls(){
 }
 function toggleFavorite(d){
   if(!d) return;
-  toggleFavoriteForSource(favoritesBySource, d.source, d.postUrl);
+  toggleFavoriteForSource(favoritesBySource, d);
   saveFavoritesBySource();
   syncFavoriteControls();
   if(favoriteOnly) render();
   else document.querySelectorAll('.card').forEach(card=>{
     const video=currentList[+card.dataset.i];
-    if(video && video.source === d.source && video.postUrl === d.postUrl){
+    if(video && video.source === d.source && video.videoUrl === d.videoUrl){
       const button=card.querySelector('.favorite-btn');
       if(button){ const saved=isFavorite(video); button.classList.toggle('is-favorite',saved); button.textContent=saved?'★':'☆'; button.setAttribute('aria-label',saved?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'); button.setAttribute('aria-pressed',String(saved)); }
     }
@@ -260,7 +261,7 @@ function render(){
       ? `<img src="${d.thumbnailUrl}" loading="lazy" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
       : '🎬';
     const cls = ({ SoMay:'src-so', Rewaida:'src-rw', 'Rabbit Rayong':'src-cx', Subhash:'src-su', Lietongheng:'src-lt', NNNKII88:'src-nk', Ginan:'src-gn', 'Ana Lopez':'src-al', Lxrvip1:'src-lx', Songruhee23:'src-sr', AmySchkade:'src-am' })[d.source] || '';
-    return `<div class="card ${i===currentIdx?'playing':''}" data-i="${i}">
+    return `<div class="card ${i===currentIdx?'playing':''}" data-i="${i}" role="button" tabindex="0">
       <div class="thumb">${thumb}<button class="favorite-btn ${isFavorite(d)?'is-favorite':''}" type="button" aria-label="${isFavorite(d)?'นำออกจากรายการโปรด':'เพิ่มในรายการโปรด'}" aria-pressed="${isFavorite(d)}">${isFavorite(d)?'★':'☆'}</button></div>
       <div class="info">
         <div><span class="badge ${cls}">${d.sourceLabel}</span>
@@ -274,7 +275,8 @@ function render(){
     $('loadMore').onclick = () => { visibleCardLimit += 300; render(); };
   }
   grid.querySelectorAll('.card').forEach(el=>{
-    el.onclick=()=>openAt(+el.dataset.i,true);
+    el.onclick=event=>{ if(!event.target.closest('button')) openAt(+el.dataset.i,true); };
+    el.onkeydown=event=>{ if(event.target===el&&(event.key==='Enter'||event.key===' ')){ event.preventDefault(); openAt(+el.dataset.i,true); } };
     el.querySelector('.favorite-btn').onclick=e=>{ e.stopPropagation(); toggleFavorite(currentList[+el.dataset.i]); };
   });
   syncFavoriteControls();
@@ -284,16 +286,20 @@ function render(){
 function renderPlaylist(){
   const items = filterPlaylistItems(currentList, playlistSearchEl.value);
   plList.innerHTML = items.length ? items.map(({video:d,index:i})=>`
-    <div class="pl-item ${i===currentIdx?'active':''}" data-i="${i}">
+    <div class="pl-item ${i===currentIdx?'active':''}" data-i="${i}" role="button" tabindex="0">
       <span class="num">${i+1}.</span>
       <span>${fmtDur(d.durationSeconds)} · 👁${fmtViews(d.views)} · ${d.sourceLabel}</span>
     </div>`).join('') : '<div class="loading">ไม่พบรายการใน Playlist</div>';
-  plList.querySelectorAll('.pl-item').forEach(el=>{ el.onclick=()=>{
-    openAt(+el.dataset.i,true);
+  plList.querySelectorAll('.pl-item').forEach(el=>{
+    const activate=()=>{ openAt(+el.dataset.i,true);
     playlist.classList.remove('mobile-open');
     togglePlaylistButton.setAttribute('aria-expanded','false');
-  }; });
+    };
+    el.onclick=activate;
+    el.onkeydown=event=>{ if(event.target===el&&(event.key==='Enter'||event.key===' ')){ event.preventDefault(); activate(); } };
+  });
 }
+
 
 function updateActive(){
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('playing',+c.dataset.i===currentIdx));
@@ -319,7 +325,10 @@ function syncFullscreenButton(){
 async function enterFS(){
   if(appDisplayMode || fullscreenPending || fsEl()) return;
   const f = modal.requestFullscreen||modal.webkitRequestFullscreen;
-  if(!f) return;
+  if(!f){
+    if(typeof player.webkitEnterFullscreen==='function'){ try{ player.webkitEnterFullscreen(); }catch(e){ console.warn('เปิดเต็มจอบน iOS ไม่ได้',e); } }
+    return;
+  }
   fullscreenPending=true; syncFullscreenButton();
   try{await f.call(modal);}catch(e){console.warn('เปิดเต็มจอไม่ได้',e);}
   finally{fullscreenPending=false;syncFullscreenButton();}
@@ -509,7 +518,7 @@ stage.addEventListener('touchend',e=>{
 
 /* คีย์บอร์ด */
 document.addEventListener('keydown',e=>{
-  if(!modal.classList.contains('active')) return;
+  if(!modal.classList.contains('active') || shouldIgnorePlayerShortcut(e.target)) return;
   if(e.key==='Escape' && !fsEl()) closeModal();
   else if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();nextVideo();}
   else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();prevVideo();}
