@@ -32,12 +32,13 @@ const expectedArtwork = {
   Thephphraceaca: 'src/assets/accounts/thephphraceaca.jpg',
   Mnnnnnnnnnn20: 'src/assets/accounts/mnnnnnnnnnn20.jpg',
   'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg',
-  Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg'
+  Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg',
+  MJN96744: 'src/assets/accounts/mjn96744.jpg'
 };
 
 test('maps configured account artwork to distinct local assets', async () => {
   assert.deepEqual(ACCOUNT_ARTWORK, expectedArtwork);
-  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 28);
+  assert.equal(new Set(Object.values(ACCOUNT_ARTWORK)).size, 29);
   for (const [source, path] of Object.entries(expectedArtwork)) {
     assert.equal(getAccountArtwork(source), path);
     await access(new URL(`../${path}`, import.meta.url));
@@ -50,7 +51,8 @@ test('maps the two profile avatars and omits a separate avatar overlay when the 
 
   const expectedAvatars = {
     Songruhee23: 'src/assets/accounts/songruhee23-avatar.webp',
-    AmySchkade: 'src/assets/accounts/amyschkade-avatar.webp'
+    AmySchkade: 'src/assets/accounts/amyschkade-avatar.webp',
+    MJN96744: 'src/assets/accounts/mjn96744.jpg'
   };
   assert.deepEqual(accountArt.ACCOUNT_AVATARS, expectedAvatars);
   for (const [source, path] of Object.entries(expectedAvatars)) {

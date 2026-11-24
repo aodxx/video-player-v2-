@@ -48,7 +48,7 @@ python3 -m http.server 8080
 SOURCE|POSTED_AT|POST_URL|VIDEO_URL|THUMBNAIL_URL|DURATION_SECONDS|VIEWS|TEXT
 ```
 
-`SOURCE` ต้องเป็นรหัสที่ลงทะเบียนใน `src/catalog.js` รวมถึง `SR` (`@Songruhee23`), `AM` (`@AmySchkade`), `GW` (`@goodwork56`) และ `GM` (`@Gamemint4210`); URL วิดีโอต้องเป็น HTTPS บน `video.twimg.com`; ภาพปกว่างได้ หรือเป็น HTTPS บน `pbs.twimg.com`. โพสต์เดียวกันอาจมีหลายคลิป จึงตรวจรายการซ้ำจาก `VIDEO_URL` ไม่ใช่ `POST_URL`. ข้อความโพสต์มีเครื่องหมาย `|` ได้ เพราะ parser รวมส่วนที่เหลือกลับเป็นข้อความเดิม ตรวจ catalogue ก่อนเผยแพร่ด้วย `npm run validate:data`; validator รายงานข้อผิดพลาดโดยไม่แก้หรือลบแถวเอง
+`SOURCE` ต้องเป็นรหัสที่ลงทะเบียนใน `src/catalog.js` รวมถึง `SR` (`@Songruhee23`), `AM` (`@AmySchkade`), `GW` (`@goodwork56`), `GM` (`@Gamemint4210`) และ `MJ` (`@MJN96744`); URL วิดีโอต้องเป็น HTTPS บน `video.twimg.com`; ภาพปกว่างได้ หรือเป็น HTTPS บน `pbs.twimg.com`. โพสต์เดียวกันอาจมีหลายคลิป จึงตรวจรายการซ้ำจาก `VIDEO_URL` ไม่ใช่ `POST_URL`. ข้อความโพสต์มีเครื่องหมาย `|` ได้ เพราะ parser รวมส่วนที่เหลือกลับเป็นข้อความเดิม ตรวจ catalogue ก่อนเผยแพร่ด้วย `npm run validate:data`; validator รายงานข้อผิดพลาดโดยไม่แก้หรือลบแถวเอง
 
 ## Worker และข้อควรระวัง
 
