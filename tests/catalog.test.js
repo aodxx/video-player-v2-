@@ -36,6 +36,14 @@ test('parses the LuangKhoNom source code and account label', () => {
   assert.equal(video?.postUrl, 'https://x.com/LuangKhoNom/status/2125244935645605962');
 });
 
+test('parses the MdSarfa54717106 source code and account label', () => {
+  const [video] = parseRawData('MS|2026-11-22 00:13|https://x.com/MdSarfa54717106/status/2124189513195073623|https://video.twimg.com/amplify_video/1989308362971037696/vid/avc1/852x480/i_98--SwPleqjobW.mp4?tag=21|https://pbs.twimg.com/amplify_video_thumb/1989308362971037696/img/md1Eiv8G77mMbrCJ.jpg|1814|26730|');
+  assert.equal(video?.source, 'MdSarfa54717106');
+  assert.equal(video?.sourceLabel, '@MdSarfa54717106');
+  assert.equal(video?.postUrl.startsWith('https://x.com/MdSarfa54717106/status/'), true);
+  assert.ok(video?.durationSeconds > 0);
+});
+
 test('parses the fayeol11 source code and account label', () => {
   const [video] = parseRawData('FY|2026-11-24 15:31|https://x.com/fayeol11/status/2125250908414238965|https://video.twimg.com/amplify_video/2125250738339381249/vid/avc1/394x720/vAc5_qqby1n9Va4P.mp4?tag=14|https://pbs.twimg.com/amplify_video_thumb/2125250738339381249/img/t3ZtHeirqIaxkrFg.jpg|395|5112|sample clip');
   assert.equal(video?.source, 'fayeol11');

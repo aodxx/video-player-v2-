@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [2.14.0] - 2026-11-25
+
+### Added
+- Added the @MdSarfa54717106 source filter and 37 new unique video URLs with verified post links, MP4 renditions, thumbnails, dates, durations, and view counts.
+
+### Notes
+- The approved scrape returned 662 timeline posts (80 original posts and 582 reposts) from the requested account. The result contained 664 media entries; repeated media URLs and 522 URLs already present in the catalogue were excluded. 37 new unique URLs were added. Profile artwork and post caption text were not imported.
+
 ## [2.13.0] - 2026-11-23
 
 ### Added
