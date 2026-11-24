@@ -29,7 +29,8 @@ const SOURCES = Object.freeze({
   YM: ['Yes‼️ไม่เลือกหน้า', '@yes_mailueK'],
   GM: ['Gamemint4210', '@Gamemint4210'],
   XI: ['X Import', 'X Import'],
-  VH: ['Vhcosmetic', '@vhcosmetic']
+  VH: ['Vhcosmetic', '@vhcosmetic'],
+  MJ: ['MJN96744', '@MJN96744']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -54,7 +55,8 @@ const ACCOUNT_LABELS = Object.freeze({
   Mnnnnnnnnnn20: '@Mnnnnnnnnnn20',
   'Yes‼️ไม่เลือกหน้า': '@yes_mailueK',
   'X Import': 'Imported X videos',
-  Vhcosmetic: '@vhcosmetic'
+  Vhcosmetic: '@vhcosmetic',
+  MJN96744: '@MJN96744'
 });
 
 function isHttpsHost(value, host) {
