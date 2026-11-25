@@ -28,13 +28,15 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg',
   Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg',
   MJN96744: 'src/assets/accounts/mjn96744.jpg',
-  LuangKhoNom: 'src/assets/accounts/luang-kho-nom.jpg'
+  LuangKhoNom: 'src/assets/accounts/luang-kho-nom.jpg',
+  Yxdkamkhun: 'src/assets/accounts/yxdkamkhun.jpg'
 });
 
 export const ACCOUNT_AVATARS = Object.freeze({
   Songruhee23: 'src/assets/accounts/songruhee23-avatar.webp',
   AmySchkade: 'src/assets/accounts/amyschkade-avatar.webp',
-  MJN96744: 'src/assets/accounts/mjn96744.jpg'
+  MJN96744: 'src/assets/accounts/mjn96744.jpg',
+  Yxdkamkhun: 'src/assets/accounts/yxdkamkhun.jpg'
 });
 
 export function getAccountAvatar(source) {
