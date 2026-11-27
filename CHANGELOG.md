@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [2.15.0] - 2026-11-27
+
+### Added
+- Added the @Cudphakyes source filter and 271 new unique MP4 URLs with verified post links, thumbnails, timestamps, durations, view counts, and post text; reposts are included.
+- Of the 271 added clips, 128 are from reposted timeline entries and 143 from original posts.
+- Added the account's profile artwork.
+
+### Notes
+- The approved XQuik scrape returned 1,520 timeline entries (1,183 reposts and 336 original posts, plus one profile record). All 1,519 video posts had valid MP4 and thumbnail metadata. 954 URLs already existed in the catalogue, 291 duplicates occurred within the scrape, and 3 additional URLs overlapped open PR #43; 271 unique URLs were added.
+
 ## [2.14.0] - 2026-11-25
 
 ### Added
