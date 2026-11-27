@@ -22,6 +22,15 @@ test('parses the MJN96744 source code and account label', () => {
   assert.equal(video?.views, 38507);
 });
 
+test('parses the Yxdkamkhun source code and account label', () => {
+  const [video] = parseRawData('YX|2026-11-25 15:18|https://x.com/Yxdkamkhun/status/2125610155442335793|https://video.twimg.com/amplify_video/2069026743168692224/vid/avc1/608x1080/e4H-DFo88DnoKzQg.mp4?tag=28|https://pbs.twimg.com/amplify_video_thumb/2069026743168692224/img/d-qy6r97P810AT0o.jpg|328|1378|ALPHAONE');
+  assert.equal(video?.source, 'Yxdkamkhun');
+  assert.equal(video?.sourceLabel, '@Yxdkamkhun');
+  assert.equal(video?.durationSeconds, 328);
+  assert.equal(video?.views, 1378);
+  assert.equal(catalog.summarizeSources([video])[0]?.accountLabel, '@Yxdkamkhun');
+});
+
 test('parses the Jimwhan01 source code and account label', () => {
   const [video] = parseRawData('JI|2026-11-24 11:19|https://x.com/Jimwhan01/status/2125187549635490098|https://video.twimg.com/amplify_video/2125090047963893760/vid/avc1/478x852/EiZWY2C1POHCtrxw.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2125090047963893760/img/9e3XtuPECMYl5L1O.jpg|1377|4377|sample clip');
   assert.equal(video?.source, 'Jimwhan01');
