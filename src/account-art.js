@@ -28,7 +28,8 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   'Yes‼️ไม่เลือกหน้า': 'src/assets/accounts/yes-mailuek.jpg',
   Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg',
   MJN96744: 'src/assets/accounts/mjn96744.jpg',
-  LuangKhoNom: 'src/assets/accounts/luang-kho-nom.jpg'
+  LuangKhoNom: 'src/assets/accounts/luang-kho-nom.jpg',
+  Cudphakyes: 'src/assets/accounts/cudphakyes.jpg'
 });
 
 export const ACCOUNT_AVATARS = Object.freeze({
