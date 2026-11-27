@@ -29,6 +29,7 @@ export const ACCOUNT_ARTWORK = Object.freeze({
   Vhcosmetic: 'src/assets/accounts/vhcosmetic.jpg',
   MJN96744: 'src/assets/accounts/mjn96744.jpg',
   LuangKhoNom: 'src/assets/accounts/luang-kho-nom.jpg',
+  Cudphakyes: 'src/assets/accounts/cudphakyes.jpg',
   Yxdkamkhun: 'src/assets/accounts/yxdkamkhun.jpg'
 });
 
