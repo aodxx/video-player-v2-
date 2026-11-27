@@ -36,7 +36,8 @@ const SOURCES = Object.freeze({
   FY: ['fayeol11', '@fayeol11'],
   MS: ['MdSarfa54717106', '@MdSarfa54717106'],
   CY: ['Cudphakyes', '@Cudphakyes'],
-  YX: ['Yxdkamkhun', '@Yxdkamkhun']
+  YX: ['Yxdkamkhun', '@Yxdkamkhun'],
+  TS: ['ThaiOnlySejz', '@ThaiOnlySejz']
 });
 
 const ACCOUNT_LABELS = Object.freeze({
@@ -68,7 +69,8 @@ const ACCOUNT_LABELS = Object.freeze({
   fayeol11: '@fayeol11',
   MdSarfa54717106: '@MdSarfa54717106',
   Cudphakyes: '@Cudphakyes',
-  Yxdkamkhun: '@Yxdkamkhun'
+  Yxdkamkhun: '@Yxdkamkhun',
+  ThaiOnlySejz: '@ThaiOnlySejz'
 });
 
 function isHttpsHost(value, host) {

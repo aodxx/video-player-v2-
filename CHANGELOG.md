@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Added
+- Added the @ThaiOnlySejz source filter and 77 new unique MP4 URLs with verified X post links, thumbnails, timestamps, durations, view counts, and post text; reposts are included.
+
+### Notes
+- The approved Apify run reported 637 billable results and 609 video-post dataset entries (536 reposts and 73 original posts). The dataset contained 505 unique MP4 URLs; 428 already existed and 104 repeated media appearances were deduplicated, leaving 77 new URLs (66 repost entries and 11 original posts). The run cost was $0.09555 at $0.00015 per billable result. Returned posts covered 2026-10-20 19:14 UTC through 2026-11-27 17:00 UTC.
+
 ## [2.15.0] - 2026-11-27
 
 ### Added

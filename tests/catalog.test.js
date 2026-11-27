@@ -31,6 +31,14 @@ test('parses the Yxdkamkhun source code and account label', () => {
   assert.equal(catalog.summarizeSources([video])[0]?.accountLabel, '@Yxdkamkhun');
 });
 
+test('parses the ThaiOnlySejz source code and account label', () => {
+  const [video] = parseRawData('TS|2026-11-27 17:00|https://x.com/ThaiOnlySejz/status/2126357851220414711|https://video.twimg.com/amplify_video/1973032739290202112/vid/avc1/712x1280/oWc0RWj2cQHOXfU7.mp4?tag=21|https://pbs.twimg.com/amplify_video_thumb/1973032739290202112/img/6N-HXDAD0B4OVOJ2.jpg|1736|3064|sample clip');
+  assert.equal(video?.source, 'ThaiOnlySejz');
+  assert.equal(video?.sourceLabel, '@ThaiOnlySejz');
+  assert.equal(video?.postUrl, 'https://x.com/ThaiOnlySejz/status/2126357851220414711');
+  assert.equal(catalog.summarizeSources([video])[0]?.accountLabel, '@ThaiOnlySejz');
+});
+
 test('parses the Jimwhan01 source code and account label', () => {
   const [video] = parseRawData('JI|2026-11-24 11:19|https://x.com/Jimwhan01/status/2125187549635490098|https://video.twimg.com/amplify_video/2125090047963893760/vid/avc1/478x852/EiZWY2C1POHCtrxw.mp4?tag=29|https://pbs.twimg.com/amplify_video_thumb/2125090047963893760/img/9e3XtuPECMYl5L1O.jpg|1377|4377|sample clip');
   assert.equal(video?.source, 'Jimwhan01');
